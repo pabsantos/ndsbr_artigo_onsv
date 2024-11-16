@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR" xml:lang="pt-BR"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Pedro Augusto Borges dos Santos">
+
+<title>NDS-BR e velocidades inseguras em vias urbanas</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="report_files/libs/clipboard/clipboard.min.js"></script>
+<script src="report_files/libs/quarto-html/quarto.js"></script>
+<script src="report_files/libs/quarto-html/popper.min.js"></script>
+<script src="report_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="report_files/libs/quarto-html/anchor.min.js"></script>
+<link href="report_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="report_files/libs/quarto-html/quarto-syntax-highlighting-2486e1f0a3ee9ee1fc393803a1361cdb.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="report_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="report_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="report_files/libs/bootstrap/bootstrap-677b520d69fcc55ab41b4b425631e74d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">NDS-BR e velocidades inseguras em vias urbanas</h1>
+<p class="subtitle lead">Análise quantitativa</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Autor</div>
+    <div class="quarto-title-meta-contents">
+             <p>Pedro Augusto Borges dos Santos </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Data de Publicação</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">15 de novembro de 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introdução" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Introdução</h1>
+<div id="setup" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="dados-do-nds-br" class="level1 page-columns page-full" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Dados do NDS-BR</h1>
+<p>Para o cálculo da distribuição da velocidade nas vias de Curitiba, utilizou-se os dados do NDS-BR, que apresentam os dados de velocidade instantânea e a localização. O bloco a seguir apresenta a leitura dos dados e as colunas que identificam os condutores, as viagens, o local e a velocidade praticada.</p>
+<div class="cell page-columns page-full" data-execution_count="2">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>nds_path <span class="op">=</span> <span class="st">"../data/ndsbr_full.parquet"</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>ndsbr_sample <span class="op">=</span> pd.read_parquet(nds_path)</span>
+<span id="cb2-3"><a href="#cb2-3"></a>cols <span class="op">=</span> [<span class="st">'driver'</span>, <span class="st">'trip'</span>, <span class="st">'long'</span>, <span class="st">'lat'</span>, <span class="st">'spd_kmh'</span>]</span>
+<span id="cb2-4"><a href="#cb2-4"></a>ndsbr_sample[cols].head(n<span class="op">=</span><span class="dv">10</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div id="tbl-ndsbr" class="cell quarto-float quarto-figure quarto-figure-center anchored page-columns page-full" data-execution_count="2">
+<figure class="quarto-float quarto-float-tbl figure page-columns page-full">
+<div aria-describedby="tbl-ndsbr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+
+
+<table class="dataframe do-not-create-environment cell table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">driver</th>
+<th data-quarto-table-cell-role="th">trip</th>
+<th data-quarto-table-cell-role="th">long</th>
+<th data-quarto-table-cell-role="th">lat</th>
+<th data-quarto-table-cell-role="th">spd_kmh</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-quarto-table-cell-role="th">0</td>
+<td>A</td>
+<td>2</td>
+<td>-49.2341</td>
+<td>-25.434755</td>
+<td>0.1609</td>
+</tr>
+<tr>
+<td data-quarto-table-cell-role="th">1</td>
+<td>A</td>
+<td>2</td>
+<td>-49.2341</td>
+<td>-25.434755</td>
+<td>0.0000</td>
+</tr>
+<tr>
+<td data-quarto-table-cell-role="th">2</td>
+<td>A</td>
+<td>2</td>
+<td>-49.2341</td>
+<td>-25.434757</td>
+<td>0.1609</td>
+</tr>
+<tr>
+<td data-quarto-table-cell-role="th">3</td>
+<td>A</td>
+<td>2</td>
+<td>-49.2341</td>
+<td>-25.434757</td>
+<td>0.1609</td>
+</tr>
+<tr>
+<td data-quarto-table-cell-role="th">4</td>
+<td>A</td>
+<td>2</td>
+<td>-49.2341</td>
+<td>-25.434757</td>
+<td>0.1609</td>
+</tr>
+<tr>
+<td data-quarto-table-cell-role="th">5</td>
+<td>A</td>
+<td>2</td>
+<td>-49.2341</td>
+<td>-25.434757</td>
+<td>0.0000</td>
+</tr>
+<tr>
+<td data-quarto-table-cell-role="th">6</td>
+<td>A</td>
+<td>2</td>
+<td>-49.2341</td>
+<td>-25.434757</td>
+<td>0.0000</td>
+</tr>
+<tr>
+<td data-quarto-table-cell-role="th">7</td>
+<td>A</td>
+<td>2</td>
+<td>-49.2341</td>
+<td>-25.434759</td>
+<td>0.0000</td>
+</tr>
+<tr>
+<td data-quarto-table-cell-role="th">8</td>
+<td>A</td>
+<td>2</td>
+<td>-49.2341</td>
+<td>-25.434759</td>
+<td>0.0000</td>
+</tr>
+<tr>
+<td data-quarto-table-cell-role="th">9</td>
+<td>A</td>
+<td>2</td>
+<td>-49.2341</td>
+<td>-25.434759</td>
+<td>0.0000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-tbl margin-caption" id="tbl-ndsbr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabela&nbsp;1: Amostra do NDSBR
+</figcaption>
+</figure>
+</div>
+</div>
+<section id="amostra-utilizada" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="amostra-utilizada"><span class="header-section-number">2.1</span> Amostra utilizada</h2>
+<div id="sample-calc" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a>n_drivers <span class="op">=</span> ndsbr_sample[<span class="st">'driver'</span>].nunique()</span>
+<span id="cb3-2"><a href="#cb3-2"></a>driven_hours <span class="op">=</span> <span class="bu">len</span>(ndsbr_sample) <span class="op">/</span> <span class="dv">3600</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a>n_trips <span class="op">=</span> ndsbr_sample[<span class="st">'id'</span>].nunique()</span>
+<span id="cb3-4"><a href="#cb3-4"></a></span>
+<span id="cb3-5"><a href="#cb3-5"></a>trip_per_driver <span class="op">=</span> ndsbr_sample.groupby(<span class="st">'driver'</span>)[<span class="st">'trip'</span>].nunique()</span>
+<span id="cb3-6"><a href="#cb3-6"></a>min_trip <span class="op">=</span> trip_per_driver.<span class="bu">min</span>()</span>
+<span id="cb3-7"><a href="#cb3-7"></a>max_trip <span class="op">=</span> trip_per_driver.<span class="bu">max</span>()</span>
+<span id="cb3-8"><a href="#cb3-8"></a>mean_trip <span class="op">=</span> trip_per_driver.mean()</span>
+<span id="cb3-9"><a href="#cb3-9"></a></span>
+<span id="cb3-10"><a href="#cb3-10"></a>first_trip <span class="op">=</span> ndsbr_sample[<span class="st">'trip'</span>].dropna().<span class="bu">min</span>()</span>
+<span id="cb3-11"><a href="#cb3-11"></a>last_trip <span class="op">=</span> ndsbr_sample[<span class="st">'trip'</span>].dropna().<span class="bu">max</span>()</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="dist-calc" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>ndsbr_geo <span class="op">=</span> gpd.GeoDataFrame(</span>
+<span id="cb4-2"><a href="#cb4-2"></a>    ndsbr_sample, </span>
+<span id="cb4-3"><a href="#cb4-3"></a>    geometry<span class="op">=</span>gpd.points_from_xy(ndsbr_sample[<span class="st">'long'</span>], ndsbr_sample[<span class="st">'lat'</span>],</span>
+<span id="cb4-4"><a href="#cb4-4"></a>    crs <span class="op">=</span> <span class="st">'epsg:4326'</span>)</span>
+<span id="cb4-5"><a href="#cb4-5"></a>)</span>
+<span id="cb4-6"><a href="#cb4-6"></a></span>
+<span id="cb4-7"><a href="#cb4-7"></a>ndsbr_geo_utm <span class="op">=</span> ndsbr_geo.to_crs(<span class="st">'31982'</span>)</span>
+<span id="cb4-8"><a href="#cb4-8"></a>dist_between_points <span class="op">=</span> ndsbr_geo_utm.distance(ndsbr_geo_utm.shift(<span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb4-9"><a href="#cb4-9"></a></span>
+<span id="cb4-10"><a href="#cb4-10"></a>ndsbr_dist <span class="op">=</span> pd.concat(</span>
+<span id="cb4-11"><a href="#cb4-11"></a>    [ndsbr_geo_utm, dist_between_points],</span>
+<span id="cb4-12"><a href="#cb4-12"></a>    axis<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a>).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-14"><a href="#cb4-14"></a></span>
+<span id="cb4-15"><a href="#cb4-15"></a>ndsbr_dist.rename(columns<span class="op">=</span>{<span class="dv">0</span>:<span class="st">'dist'</span>}, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-16"><a href="#cb4-16"></a></span>
+<span id="cb4-17"><a href="#cb4-17"></a>ndsbr_dist[<span class="st">'time'</span>] <span class="op">=</span> pd.to_datetime(ndsbr_dist[<span class="st">'time'</span>], <span class="bu">format</span> <span class="op">=</span> <span class="st">'%H:%M:%S'</span>)</span>
+<span id="cb4-18"><a href="#cb4-18"></a>ndsbr_dist[<span class="st">'delta_time'</span>] <span class="op">=</span> ndsbr_dist[<span class="st">'time'</span>] <span class="op">-</span> ndsbr_dist[<span class="st">'time'</span>].shift(<span class="dv">1</span>)</span>
+<span id="cb4-19"><a href="#cb4-19"></a>ndsbr_dist[<span class="st">'delta_time'</span>] <span class="op">=</span> ndsbr_dist[<span class="st">'delta_time'</span>].<span class="bu">apply</span>(</span>
+<span id="cb4-20"><a href="#cb4-20"></a>    <span class="kw">lambda</span> x: x.total_seconds()</span>
+<span id="cb4-21"><a href="#cb4-21"></a>)</span>
+<span id="cb4-22"><a href="#cb4-22"></a></span>
+<span id="cb4-23"><a href="#cb4-23"></a>ndsbr_valid_dist <span class="op">=</span> ndsbr_dist.query(<span class="st">'delta_time == 1'</span>)</span>
+<span id="cb4-24"><a href="#cb4-24"></a>total_dist <span class="op">=</span> ndsbr_valid_dist[<span class="st">'dist'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>A amostra do NDS-BR inclui 48 condutores, com 661.81 horas de viagem ao total. Todos os condutores fizeram 2030 viagens. A quantidade mínima de viagens por condutor foi 3 e a máxima foi 118. A média das viagens por condutor foi 42. A data da primeira viagem na amostra é None e a data da ultima viagem na amostra é None. A distância percorrida por todos os condutores na amostra foi de 14316.81 km. Em média, cada condutor percorreu 298.27 km.</p>
+</section>
+<section id="distribuição-da-velocidade-praticada" class="level2 page-columns page-full" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="distribuição-da-velocidade-praticada"><span class="header-section-number">2.2</span> Distribuição da velocidade praticada</h2>
+<p>Como observado na <a href="#fig-hist-vel" class="quarto-xref">Figura&nbsp;1</a>, boa parte das velocidades praticadas dentro da amostra estão abaixo da velocidade de 5 km/h, incluindo os momentos em que os veículos também estavam parados no trânsito (0 km/h). Outros grupos que se destacam são aqueles entre 30 e 40 km/h.</p>
+<div id="cell-fig-hist-vel" class="cell page-columns page-full" data-execution_count="5">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb5-2"><a href="#cb5-2"></a>ax.hist(</span>
+<span id="cb5-3"><a href="#cb5-3"></a>    ndsbr_geo_utm[<span class="st">'spd_kmh'</span>],</span>
+<span id="cb5-4"><a href="#cb5-4"></a>    bins <span class="op">=</span> np.arange(<span class="dv">0</span>, <span class="dv">160</span>, <span class="dv">10</span>),</span>
+<span id="cb5-5"><a href="#cb5-5"></a>    color <span class="op">=</span> <span class="st">'#00496d'</span>,</span>
+<span id="cb5-6"><a href="#cb5-6"></a>    edgecolor <span class="op">=</span> <span class="st">'grey'</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a>)</span>
+<span id="cb5-8"><a href="#cb5-8"></a>ax.set_xticks(np.arange(<span class="dv">0</span>, <span class="dv">160</span>, <span class="dv">10</span>))</span>
+<span id="cb5-9"><a href="#cb5-9"></a>ax.set_xlabel(<span class="st">'Velocidade (km/h)'</span>)</span>
+<span id="cb5-10"><a href="#cb5-10"></a>ax.set_ylabel(<span class="st">'Tempo de viagem (seg)'</span>)</span>
+<span id="cb5-11"><a href="#cb5-11"></a>fig.show()</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display page-columns page-full">
+<div id="fig-hist-vel" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div aria-describedby="fig-hist-vel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="report_files/figure-html/fig-hist-vel-output-1.png" width="589" height="443" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-hist-vel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;1: Distribuição da velocidade praticada
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Ao considerar as velocidades maiores que 5 km/h, a distribuição da velocidade praticada fica com uma curva mais concentrada, conforme demonstrado em <a href="#fig-hist-vel-filter" class="quarto-xref">Figura&nbsp;2</a>. Para os cálculos seguintes deste trabalho, serão consideradas apenas as velocidades acima de 5 km/h</p>
+<div id="cell-fig-hist-vel-filter" class="cell page-columns page-full" data-fig-dpi="300" data-execution_count="6">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>ndsbr_valid_speed <span class="op">=</span> ndsbr_geo_utm.query(<span class="st">'spd_kmh &gt; 5'</span>)</span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb6-4"><a href="#cb6-4"></a>ax.hist(</span>
+<span id="cb6-5"><a href="#cb6-5"></a>    ndsbr_valid_speed[<span class="st">'spd_kmh'</span>],</span>
+<span id="cb6-6"><a href="#cb6-6"></a>    bins <span class="op">=</span> np.arange(<span class="dv">0</span>, <span class="dv">160</span>, <span class="dv">10</span>),</span>
+<span id="cb6-7"><a href="#cb6-7"></a>    color <span class="op">=</span> <span class="st">'#00496d'</span>,</span>
+<span id="cb6-8"><a href="#cb6-8"></a>    edgecolor <span class="op">=</span> <span class="st">'grey'</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a>)</span>
+<span id="cb6-10"><a href="#cb6-10"></a>ax.set_xticks(np.arange(<span class="dv">0</span>, <span class="dv">160</span>, <span class="dv">10</span>))</span>
+<span id="cb6-11"><a href="#cb6-11"></a>ax.set_xlabel(<span class="st">'Velocidade (km/h)'</span>)</span>
+<span id="cb6-12"><a href="#cb6-12"></a>ax.set_ylabel(<span class="st">'Tempo de viagem (seg)'</span>)</span>
+<span id="cb6-13"><a href="#cb6-13"></a>fig.show()</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display page-columns page-full">
+<div id="fig-hist-vel-filter" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div aria-describedby="fig-hist-vel-filter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="report_files/figure-html/fig-hist-vel-filter-output-1.png" width="618" height="429" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-hist-vel-filter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;2: Distribuição da velocidade praticada acima de 0 km/h
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="velocidades-nas-vias-de-curitiba" class="level1 page-columns page-full" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Velocidades nas vias de Curitiba</h1>
+<p>O processo de cálculo das velocidades nas vias de Curitiba inicia com a importação dos eixos de via, fornecidos pelo IPPUC<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. A <a href="#fig-vias" class="quarto-xref">Figura&nbsp;3</a> apresenta um mapa dessas vias.</p>
+<div id="cell-fig-vias" class="cell page-columns page-full" data-execution_count="7">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>vias_url <span class="op">=</span> <span class="st">'https://ippuc.org.br/geodownloads/SHAPES_SIRGAS/EIXO_RUA_SIRGAS.zip'</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>vias <span class="op">=</span> gpd.read_file(vias_url, encoding<span class="op">=</span><span class="st">'latin1'</span>)</span>
+<span id="cb7-3"><a href="#cb7-3"></a></span>
+<span id="cb7-4"><a href="#cb7-4"></a>vias.plot(color <span class="op">=</span> <span class="st">'#00496d'</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display page-columns page-full">
+<div id="fig-vias" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div aria-describedby="fig-vias-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="report_files/figure-html/fig-vias-output-1.png" width="296" height="425" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-vias-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;3: Mapa das vias de Curitiba
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="calc-extensao" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># Calculate the extension of the network using geopandas</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>dist_vias <span class="op">=</span> vias.length.<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a></span>
+<span id="cb8-4"><a href="#cb8-4"></a>ndsbr_nearest <span class="op">=</span> gpd.sjoin_nearest(</span>
+<span id="cb8-5"><a href="#cb8-5"></a>    ndsbr_valid_speed, </span>
+<span id="cb8-6"><a href="#cb8-6"></a>    vias, </span>
+<span id="cb8-7"><a href="#cb8-7"></a>    how<span class="op">=</span><span class="st">'left'</span>,</span>
+<span id="cb8-8"><a href="#cb8-8"></a>    max_distance<span class="op">=</span><span class="dv">20</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a>)</span>
+<span id="cb8-10"><a href="#cb8-10"></a></span>
+<span id="cb8-11"><a href="#cb8-11"></a>v85_spd <span class="op">=</span> ndsbr_nearest.groupby(<span class="st">'CHAVE'</span>)[<span class="st">'spd_kmh'</span>].quantile(<span class="fl">0.85</span>).reset_index()</span>
+<span id="cb8-12"><a href="#cb8-12"></a>vias_v85 <span class="op">=</span> pd.merge(vias, v85_spd, how<span class="op">=</span><span class="st">'left'</span>, on<span class="op">=</span><span class="st">'CHAVE'</span>)</span>
+<span id="cb8-13"><a href="#cb8-13"></a></span>
+<span id="cb8-14"><a href="#cb8-14"></a><span class="co"># Filter vias_v85 where spd_kmh is not NaN</span></span>
+<span id="cb8-15"><a href="#cb8-15"></a>vias_v85_valid <span class="op">=</span> vias_v85.dropna(subset<span class="op">=</span>[<span class="st">'spd_kmh'</span>])</span>
+<span id="cb8-16"><a href="#cb8-16"></a>dist_vias_sample <span class="op">=</span> vias_v85_valid.length.<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>A malha de eixos viários de Curitiba apresenta uma extensão total de 4533.38 km. Ao considerar apenas as vias com a amostra do NDS-BR em velocidades acima de 5 km/h, a extensão das vias de Curitiba fica de 2078.41 km. A <a href="#fig-vias-v85" class="quarto-xref">Figura&nbsp;4</a> apresenta a incidência de V85 nas vias de Curitiba. Pouco mais de 700 km de vias de Curitiba apresentam V85 entre 40 e 50 km/h, sendo o intervalo com o maior valor.</p>
+<div id="calc-v85-dist" class="cell" data-execution_count="9">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># Transform spd_kmh into discrete values</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>vias_v85_valid[<span class="st">'spd_kmh_cat'</span>] <span class="op">=</span> pd.cut(</span>
+<span id="cb9-3"><a href="#cb9-3"></a>    vias_v85_valid[<span class="st">'spd_kmh'</span>], </span>
+<span id="cb9-4"><a href="#cb9-4"></a>    [<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">50</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">80</span>, <span class="dv">90</span>, <span class="dv">100</span>, <span class="dv">110</span>, <span class="dv">120</span>],</span>
+<span id="cb9-5"><a href="#cb9-5"></a>    labels<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">50</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">80</span>, <span class="dv">90</span>, <span class="dv">100</span>, <span class="dv">110</span>]</span>
+<span id="cb9-6"><a href="#cb9-6"></a>)</span>
+<span id="cb9-7"><a href="#cb9-7"></a></span>
+<span id="cb9-8"><a href="#cb9-8"></a>vias_v85_valid[<span class="st">'dist'</span>] <span class="op">=</span> vias_v85_valid.geometry.length</span>
+<span id="cb9-9"><a href="#cb9-9"></a></span>
+<span id="cb9-10"><a href="#cb9-10"></a>tbl_v85_dist <span class="op">=</span> vias_v85_valid.groupby(<span class="st">'spd_kmh_cat'</span>)[<span class="st">'dist'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span></span>
+<span id="cb9-11"><a href="#cb9-11"></a>tbl_v85_dist <span class="op">=</span> tbl_v85_dist.to_frame().reset_index()</span>
+<span id="cb9-12"><a href="#cb9-12"></a>tbl_v85_dist[<span class="st">'dist'</span>] <span class="op">=</span> tbl_v85_dist[<span class="st">'dist'</span>].astype(<span class="st">'float'</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="cell-fig-vias-v85" class="cell page-columns page-full" data-execution_count="10">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>base_plot <span class="op">=</span> vias_v85.plot(color<span class="op">=</span><span class="st">'#dbdbdb'</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb10-2"><a href="#cb10-2"></a>spd_plot <span class="op">=</span> vias_v85_valid.plot(ax<span class="op">=</span>base_plot, linewidth<span class="op">=</span><span class="fl">0.5</span>, column<span class="op">=</span><span class="st">'spd_kmh'</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display page-columns page-full">
+<div id="fig-vias-v85" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div aria-describedby="fig-vias-v85-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="report_files/figure-html/fig-vias-v85-output-1.png" width="296" height="425" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-vias-v85-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4: V85 nas vias de Curitiba
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>Tempo de viagem nas vias</li>
+<li>Recorte de hierarquia (2, 3, 4): quantos kms de amostra restante?</li>
+</ul>
+</section>
+<section id="fiscalização-eletrônica" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Fiscalização eletrônica</h1>
+<ul>
+<li>Quantidade de radares por tipo</li>
+<li>Mapeamento dos radares</li>
+</ul>
+<section id="analise-combinada-da-velocidade-com-os-radares" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="analise-combinada-da-velocidade-com-os-radares"><span class="header-section-number">4.1</span> Analise combinada da velocidade com os radares</h2>
+<ul>
+<li>Existe uma diferença significativa de v85 entre as vias que tem radar e as que não tem radar?</li>
+<li>Quais trechos de via deveriam ter radar e não tem?</li>
+<li>Boxplot: presença de radar x velocidade v85</li>
+</ul>
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Notas de rodapé</h2>
+
+<ol>
+<li id="fn1"><p>https://ippuc.org.br/geodownloads/SHAPES_SIRGAS/EIXO_RUA_SIRGAS.zip<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiada");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiada");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

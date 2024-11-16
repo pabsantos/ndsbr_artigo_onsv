@@ -1,0 +1,219 @@
+---
+title: "NDS-BR e velocidades inseguras em vias urbanas"
+subtitle: "Análise quantitativa"
+author: Pedro Augusto Borges dos Santos
+date: last-modified
+cap-location: margin
+format: html
+number-sections: true
+lang: pt-BR
+code-fold: true
+code-line-numbers: true
+execute:
+    warning: false
+    message: false
+editor_options: 
+  chunk_output_type: console
+---
+
+# Introdução
+
+```{python}
+#| label: setup
+
+import pandas as pd
+import geopandas as gpd
+import numpy as np
+import matplotlib.pyplot as plt
+```
+
+# Dados do NDS-BR
+
+Para o cálculo da distribuição da velocidade nas vias de Curitiba, utilizou-se os dados do NDS-BR, que apresentam os dados de velocidade instantânea e a localização. O bloco a seguir apresenta a leitura dos dados e as colunas que identificam os condutores, as viagens, o local e a velocidade praticada.
+
+```{python}
+#| tbl-cap: "Amostra do NDSBR"
+#| label: tbl-ndsbr
+
+nds_path = "../data/ndsbr_full.parquet"
+ndsbr_sample = pd.read_parquet(nds_path)
+cols = ['driver', 'trip', 'long', 'lat', 'spd_kmh']
+ndsbr_sample[cols].head(n=10)
+```
+
+## Amostra utilizada
+
+```{python}
+#| label: sample-calc
+
+n_drivers = ndsbr_sample['driver'].nunique()
+driven_hours = len(ndsbr_sample) / 3600
+n_trips = ndsbr_sample['id'].nunique()
+
+trip_per_driver = ndsbr_sample.groupby('driver')['trip'].nunique()
+min_trip = trip_per_driver.min()
+max_trip = trip_per_driver.max()
+mean_trip = trip_per_driver.mean()
+
+first_trip = ndsbr_sample['trip'].dropna().min()
+last_trip = ndsbr_sample['trip'].dropna().max()
+```
+
+```{python}
+#| label: dist-calc
+
+ndsbr_geo = gpd.GeoDataFrame(
+    ndsbr_sample, 
+    geometry=gpd.points_from_xy(ndsbr_sample['long'], ndsbr_sample['lat'],
+    crs = 'epsg:4326')
+)
+
+ndsbr_geo_utm = ndsbr_geo.to_crs('31982')
+dist_between_points = ndsbr_geo_utm.distance(ndsbr_geo_utm.shift(-1))
+
+ndsbr_dist = pd.concat(
+    [ndsbr_geo_utm, dist_between_points],
+    axis=1
+).reset_index(drop=True)
+
+ndsbr_dist.rename(columns={0:'dist'}, inplace=True)
+
+ndsbr_dist['time'] = pd.to_datetime(ndsbr_dist['time'], format = '%H:%M:%S')
+ndsbr_dist['delta_time'] = ndsbr_dist['time'] - ndsbr_dist['time'].shift(1)
+ndsbr_dist['delta_time'] = ndsbr_dist['delta_time'].apply(
+    lambda x: x.total_seconds()
+)
+
+ndsbr_valid_dist = ndsbr_dist.query('delta_time == 1')
+total_dist = ndsbr_valid_dist['dist'].sum() / 1000
+```
+
+A amostra do NDS-BR inclui `{python} n_drivers` condutores, com `{python} f'{driven_hours:.2f}'` horas de viagem ao total. Todos os condutores fizeram `{python} n_trips` viagens. A quantidade mínima de viagens por condutor foi `{python} f'{min_trip:.0f}'` e a máxima foi `{python} f'{max_trip: .0f}'`. A média das viagens por condutor foi `{python} f'{mean_trip: .0f}'`. A data da primeira viagem na amostra é `{python} print(first_trip)` e a data da ultima viagem na amostra é `{python} print(last_trip)`. A distância percorrida por todos os condutores na amostra foi de `{python} f'{total_dist:.2f}'` km. Em média, cada condutor percorreu `{python} f'{total_dist / n_drivers:.2f}'` km.
+
+## Distribuição da velocidade praticada
+
+Como observado na @fig-hist-vel, boa parte das velocidades praticadas dentro da amostra estão abaixo da velocidade de 5 km/h, incluindo os momentos em que os veículos também estavam parados no trânsito (0 km/h). Outros grupos que se destacam são aqueles entre 30 e 40 km/h.
+
+```{python}
+#| label: fig-hist-vel
+#| fig-cap: "Distribuição da velocidade praticada"
+
+fig, ax = plt.subplots()
+ax.hist(
+    ndsbr_geo_utm['spd_kmh'],
+    bins = np.arange(0, 160, 10),
+    color = '#00496d',
+    edgecolor = 'grey'
+)
+ax.set_xticks(np.arange(0, 160, 10))
+ax.set_xlabel('Velocidade (km/h)')
+ax.set_ylabel('Tempo de viagem (seg)')
+fig.show()
+```
+
+Ao considerar as velocidades maiores que 5 km/h, a distribuição da velocidade praticada fica com uma curva mais concentrada, conforme demonstrado em @fig-hist-vel-filter. Para os cálculos seguintes deste trabalho, serão consideradas apenas as velocidades acima de 5 km/h
+
+```{python}
+#| label: fig-hist-vel-filter
+#| fig-cap: "Distribuição da velocidade praticada acima de 0 km/h"
+#| fig-dpi: 300
+
+ndsbr_valid_speed = ndsbr_geo_utm.query('spd_kmh > 5')
+
+fig, ax = plt.subplots()
+ax.hist(
+    ndsbr_valid_speed['spd_kmh'],
+    bins = np.arange(0, 160, 10),
+    color = '#00496d',
+    edgecolor = 'grey'
+)
+ax.set_xticks(np.arange(0, 160, 10))
+ax.set_xlabel('Velocidade (km/h)')
+ax.set_ylabel('Tempo de viagem (seg)')
+fig.show()
+```
+
+# Velocidades nas vias de Curitiba
+
+O processo de cálculo das velocidades nas vias de Curitiba inicia com a importação dos eixos de via, fornecidos pelo IPPUC^[https://ippuc.org.br/geodownloads/SHAPES_SIRGAS/EIXO_RUA_SIRGAS.zip]. A @fig-vias apresenta um mapa dessas vias.
+
+```{python}
+#| label: fig-vias
+#| fig-cap: "Mapa das vias de Curitiba"
+
+vias_url = 'https://ippuc.org.br/geodownloads/SHAPES_SIRGAS/EIXO_RUA_SIRGAS.zip'
+vias = gpd.read_file(vias_url, encoding='latin1')
+
+vias.plot(color = '#00496d', linewidth = 0.5)
+```
+
+```{python}
+#| label: calc-extensao
+
+# Calculate the extension of the network using geopandas
+dist_vias = vias.length.sum() / 1000
+
+ndsbr_nearest = gpd.sjoin_nearest(
+    ndsbr_valid_speed, 
+    vias, 
+    how='left',
+    max_distance=20
+)
+
+v85_spd = ndsbr_nearest.groupby('CHAVE')['spd_kmh'].quantile(0.85).reset_index()
+vias_v85 = pd.merge(vias, v85_spd, how='left', on='CHAVE')
+
+# Filter vias_v85 where spd_kmh is not NaN
+vias_v85_valid = vias_v85.dropna(subset=['spd_kmh'])
+dist_vias_sample = vias_v85_valid.length.sum() / 1000
+```
+
+A malha de eixos viários de Curitiba apresenta uma extensão total de `{python} f'{dist_vias:.2f}'` km. Ao considerar apenas as vias com a amostra do NDS-BR em velocidades acima de 5 km/h, a extensão das vias de Curitiba fica de `{python} f'{dist_vias_sample:.2f}'` km. A @fig-vias-v85 apresenta a incidência de V85 nas vias de Curitiba. Pouco mais de 700 km de vias de Curitiba apresentam V85 entre 40 e 50 km/h, sendo o intervalo com o maior valor. 
+
+```{python}
+#| label: calc-v85-dist
+
+# Transform spd_kmh into discrete values
+vias_v85_valid['spd_kmh_cat'] = pd.cut(
+    vias_v85_valid['spd_kmh'], 
+    [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120],
+    labels=[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110]
+)
+
+vias_v85_valid['dist'] = vias_v85_valid.geometry.length
+
+tbl_v85_dist = vias_v85_valid.groupby('spd_kmh_cat')['dist'].sum() / 1000
+tbl_v85_dist = tbl_v85_dist.to_frame().reset_index()
+tbl_v85_dist['dist'] = tbl_v85_dist['dist'].astype('float')
+
+```
+
+
+```{python}
+#| label: fig-vias-v85
+#| fig-cap: "V85 nas vias de Curitiba"
+
+base_plot = vias_v85.plot(color='#dbdbdb', linewidth=0.5)
+vias_v85_valid.plot(ax=base_plot, linewidth=0.5, column='spd_kmh', legend=True)
+
+```
+
+
+- Tempo de viagem nas vias
+
+```{python}
+
+```
+
+- Recorte de hierarquia (2, 3, 4): quantos kms de amostra restante?
+
+# Fiscalização eletrônica
+
+- Quantidade de radares por tipo
+- Mapeamento dos radares
+
+## Analise combinada da velocidade com os radares
+
+- Existe uma diferença significativa de v85 entre as vias que tem radar e as que não tem radar?
+- Quais trechos de via deveriam ter radar e não tem?
+- Boxplot: presença de radar x velocidade v85
