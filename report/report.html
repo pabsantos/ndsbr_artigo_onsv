@@ -75,12 +75,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body>
+<body class="fullcontent">
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-</div>
-<main class="content page-columns page-full" id="quarto-document-content">
+
+<main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -102,7 +101,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Data de Publicação</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">15 de novembro de 2024</p>
+      <p class="date">16 de novembro de 2024</p>
     </div>
   </div>
   
@@ -122,14 +121,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="im">from</span> plotnine <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="im">import</span> random</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
-<section id="dados-do-nds-br" class="level1 page-columns page-full" data-number="2">
+<section id="dados-do-nds-br" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Dados do NDS-BR</h1>
 <p>Para o cálculo da distribuição da velocidade nas vias de Curitiba, utilizou-se os dados do NDS-BR, que apresentam os dados de velocidade instantânea e a localização. O bloco a seguir apresenta a leitura dos dados e as colunas que identificam os condutores, as viagens, o local e a velocidade praticada.</p>
-<div class="cell page-columns page-full" data-execution_count="2">
+<div class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Código</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>nds_path <span class="op">=</span> <span class="st">"../data/ndsbr_full.parquet"</span></span>
@@ -137,16 +138,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-3"><a href="#cb2-3"></a>cols <span class="op">=</span> [<span class="st">'driver'</span>, <span class="st">'trip'</span>, <span class="st">'long'</span>, <span class="st">'lat'</span>, <span class="st">'spd_kmh'</span>]</span>
 <span id="cb2-4"><a href="#cb2-4"></a>ndsbr_sample[cols].head(n<span class="op">=</span><span class="dv">10</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div id="tbl-ndsbr" class="cell quarto-float quarto-figure quarto-figure-center anchored page-columns page-full" data-execution_count="2">
-<figure class="quarto-float quarto-float-tbl figure page-columns page-full">
+<div id="tbl-ndsbr" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="2">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ndsbr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabela&nbsp;1: Amostra do NDSBR
+</figcaption>
 <div aria-describedby="tbl-ndsbr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output cell-output-display" data-execution_count="2">
 <div>
 
 
-<table class="dataframe do-not-create-environment cell table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
 <thead>
-<tr>
+<tr class="header">
 <th data-quarto-table-cell-role="th"></th>
 <th data-quarto-table-cell-role="th">driver</th>
 <th data-quarto-table-cell-role="th">trip</th>
@@ -156,7 +160,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
 <td>A</td>
 <td>2</td>
@@ -164,7 +168,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>-25.434755</td>
 <td>0.1609</td>
 </tr>
-<tr>
+<tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
 <td>A</td>
 <td>2</td>
@@ -172,7 +176,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>-25.434755</td>
 <td>0.0000</td>
 </tr>
-<tr>
+<tr class="odd">
 <td data-quarto-table-cell-role="th">2</td>
 <td>A</td>
 <td>2</td>
@@ -180,7 +184,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>-25.434757</td>
 <td>0.1609</td>
 </tr>
-<tr>
+<tr class="even">
 <td data-quarto-table-cell-role="th">3</td>
 <td>A</td>
 <td>2</td>
@@ -188,7 +192,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>-25.434757</td>
 <td>0.1609</td>
 </tr>
-<tr>
+<tr class="odd">
 <td data-quarto-table-cell-role="th">4</td>
 <td>A</td>
 <td>2</td>
@@ -196,7 +200,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>-25.434757</td>
 <td>0.1609</td>
 </tr>
-<tr>
+<tr class="even">
 <td data-quarto-table-cell-role="th">5</td>
 <td>A</td>
 <td>2</td>
@@ -204,7 +208,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>-25.434757</td>
 <td>0.0000</td>
 </tr>
-<tr>
+<tr class="odd">
 <td data-quarto-table-cell-role="th">6</td>
 <td>A</td>
 <td>2</td>
@@ -212,7 +216,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>-25.434757</td>
 <td>0.0000</td>
 </tr>
-<tr>
+<tr class="even">
 <td data-quarto-table-cell-role="th">7</td>
 <td>A</td>
 <td>2</td>
@@ -220,7 +224,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>-25.434759</td>
 <td>0.0000</td>
 </tr>
-<tr>
+<tr class="odd">
 <td data-quarto-table-cell-role="th">8</td>
 <td>A</td>
 <td>2</td>
@@ -228,7 +232,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>-25.434759</td>
 <td>0.0000</td>
 </tr>
-<tr>
+<tr class="even">
 <td data-quarto-table-cell-role="th">9</td>
 <td>A</td>
 <td>2</td>
@@ -242,9 +246,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-tbl margin-caption" id="tbl-ndsbr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Tabela&nbsp;1: Amostra do NDSBR
-</figcaption>
 </figure>
 </div>
 </div>
@@ -262,8 +263,8 @@ Tabela&nbsp;1: Amostra do NDSBR
 <span id="cb3-7"><a href="#cb3-7"></a>max_trip <span class="op">=</span> trip_per_driver.<span class="bu">max</span>()</span>
 <span id="cb3-8"><a href="#cb3-8"></a>mean_trip <span class="op">=</span> trip_per_driver.mean()</span>
 <span id="cb3-9"><a href="#cb3-9"></a></span>
-<span id="cb3-10"><a href="#cb3-10"></a>first_trip <span class="op">=</span> ndsbr_sample[<span class="st">'trip'</span>].dropna().<span class="bu">min</span>()</span>
-<span id="cb3-11"><a href="#cb3-11"></a>last_trip <span class="op">=</span> ndsbr_sample[<span class="st">'trip'</span>].dropna().<span class="bu">max</span>()</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-10"><a href="#cb3-10"></a>first_trip <span class="op">=</span> ndsbr_sample[<span class="st">'date'</span>].dropna().<span class="bu">min</span>()</span>
+<span id="cb3-11"><a href="#cb3-11"></a>last_trip <span class="op">=</span> ndsbr_sample[<span class="st">'date'</span>].dropna().<span class="bu">max</span>()</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div id="dist-calc" class="cell" data-execution_count="4">
@@ -295,33 +296,32 @@ Tabela&nbsp;1: Amostra do NDSBR
 <span id="cb4-24"><a href="#cb4-24"></a>total_dist <span class="op">=</span> ndsbr_valid_dist[<span class="st">'dist'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>A amostra do NDS-BR inclui 48 condutores, com 661.81 horas de viagem ao total. Todos os condutores fizeram 2030 viagens. A quantidade mínima de viagens por condutor foi 3 e a máxima foi 118. A média das viagens por condutor foi 42. A data da primeira viagem na amostra é None e a data da ultima viagem na amostra é None. A distância percorrida por todos os condutores na amostra foi de 14316.81 km. Em média, cada condutor percorreu 298.27 km.</p>
+<p>A amostra do NDS-BR inclui 48 condutores, com 661.81 horas de viagem ao total. Todos os condutores fizeram 2030 viagens. A quantidade mínima de viagens por condutor foi 3 e a máxima foi 118. A média das viagens por condutor foi 42. A distância percorrida por todos os condutores na amostra foi de 14316.81 km. Em média, cada condutor percorreu 298.27 km.</p>
 </section>
-<section id="distribuição-da-velocidade-praticada" class="level2 page-columns page-full" data-number="2.2">
+<section id="distribuição-da-velocidade-praticada" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="distribuição-da-velocidade-praticada"><span class="header-section-number">2.2</span> Distribuição da velocidade praticada</h2>
 <p>Como observado na <a href="#fig-hist-vel" class="quarto-xref">Figura&nbsp;1</a>, boa parte das velocidades praticadas dentro da amostra estão abaixo da velocidade de 5 km/h, incluindo os momentos em que os veículos também estavam parados no trânsito (0 km/h). Outros grupos que se destacam são aqueles entre 30 e 40 km/h.</p>
-<div id="cell-fig-hist-vel" class="cell page-columns page-full" data-execution_count="5">
+<div id="cell-fig-hist-vel" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Código</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
-<span id="cb5-2"><a href="#cb5-2"></a>ax.hist(</span>
-<span id="cb5-3"><a href="#cb5-3"></a>    ndsbr_geo_utm[<span class="st">'spd_kmh'</span>],</span>
-<span id="cb5-4"><a href="#cb5-4"></a>    bins <span class="op">=</span> np.arange(<span class="dv">0</span>, <span class="dv">160</span>, <span class="dv">10</span>),</span>
-<span id="cb5-5"><a href="#cb5-5"></a>    color <span class="op">=</span> <span class="st">'#00496d'</span>,</span>
-<span id="cb5-6"><a href="#cb5-6"></a>    edgecolor <span class="op">=</span> <span class="st">'grey'</span></span>
-<span id="cb5-7"><a href="#cb5-7"></a>)</span>
-<span id="cb5-8"><a href="#cb5-8"></a>ax.set_xticks(np.arange(<span class="dv">0</span>, <span class="dv">160</span>, <span class="dv">10</span>))</span>
-<span id="cb5-9"><a href="#cb5-9"></a>ax.set_xlabel(<span class="st">'Velocidade (km/h)'</span>)</span>
-<span id="cb5-10"><a href="#cb5-10"></a>ax.set_ylabel(<span class="st">'Tempo de viagem (seg)'</span>)</span>
-<span id="cb5-11"><a href="#cb5-11"></a>fig.show()</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>(</span>
+<span id="cb5-2"><a href="#cb5-2"></a>    ggplot(ndsbr_sample, aes(x<span class="op">=</span><span class="st">'spd_kmh'</span>))</span>
+<span id="cb5-3"><a href="#cb5-3"></a>    <span class="op">+</span> geom_histogram(binwidth<span class="op">=</span><span class="dv">10</span>, fill<span class="op">=</span><span class="st">'#00496d'</span>, color<span class="op">=</span><span class="st">'grey'</span>)</span>
+<span id="cb5-4"><a href="#cb5-4"></a>    <span class="op">+</span> labs(</span>
+<span id="cb5-5"><a href="#cb5-5"></a>        x<span class="op">=</span><span class="st">'Velocidade (km/h)'</span>,</span>
+<span id="cb5-6"><a href="#cb5-6"></a>        y<span class="op">=</span><span class="st">'Tempo de viagem (seg)'</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a>    )</span>
+<span id="cb5-8"><a href="#cb5-8"></a>    <span class="op">+</span> theme_bw()</span>
+<span id="cb5-9"><a href="#cb5-9"></a>    <span class="op">+</span> scale_x_continuous(breaks<span class="op">=</span>np.arange(<span class="dv">0</span>, <span class="dv">160</span>, <span class="dv">10</span>))</span>
+<span id="cb5-10"><a href="#cb5-10"></a>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display page-columns page-full">
-<div id="fig-hist-vel" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full">
-<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div class="cell-output cell-output-display">
+<div id="fig-hist-vel" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-hist-vel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="report_files/figure-html/fig-hist-vel-output-1.png" width="589" height="443" class="figure-img">
+<img src="report_files/figure-html/fig-hist-vel-output-1.png" width="672" height="480" class="figure-img">
 </div>
-<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-hist-vel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hist-vel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figura&nbsp;1: Distribuição da velocidade praticada
 </figcaption>
 </figure>
@@ -329,30 +329,29 @@ Figura&nbsp;1: Distribuição da velocidade praticada
 </div>
 </div>
 <p>Ao considerar as velocidades maiores que 5 km/h, a distribuição da velocidade praticada fica com uma curva mais concentrada, conforme demonstrado em <a href="#fig-hist-vel-filter" class="quarto-xref">Figura&nbsp;2</a>. Para os cálculos seguintes deste trabalho, serão consideradas apenas as velocidades acima de 5 km/h</p>
-<div id="cell-fig-hist-vel-filter" class="cell page-columns page-full" data-fig-dpi="300" data-execution_count="6">
+<div id="cell-fig-hist-vel-filter" class="cell" data-fig-dpi="300" data-execution_count="6">
 <details class="code-fold">
 <summary>Código</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>ndsbr_valid_speed <span class="op">=</span> ndsbr_geo_utm.query(<span class="st">'spd_kmh &gt; 5'</span>)</span>
 <span id="cb6-2"><a href="#cb6-2"></a></span>
-<span id="cb6-3"><a href="#cb6-3"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
-<span id="cb6-4"><a href="#cb6-4"></a>ax.hist(</span>
-<span id="cb6-5"><a href="#cb6-5"></a>    ndsbr_valid_speed[<span class="st">'spd_kmh'</span>],</span>
-<span id="cb6-6"><a href="#cb6-6"></a>    bins <span class="op">=</span> np.arange(<span class="dv">0</span>, <span class="dv">160</span>, <span class="dv">10</span>),</span>
-<span id="cb6-7"><a href="#cb6-7"></a>    color <span class="op">=</span> <span class="st">'#00496d'</span>,</span>
-<span id="cb6-8"><a href="#cb6-8"></a>    edgecolor <span class="op">=</span> <span class="st">'grey'</span></span>
-<span id="cb6-9"><a href="#cb6-9"></a>)</span>
-<span id="cb6-10"><a href="#cb6-10"></a>ax.set_xticks(np.arange(<span class="dv">0</span>, <span class="dv">160</span>, <span class="dv">10</span>))</span>
-<span id="cb6-11"><a href="#cb6-11"></a>ax.set_xlabel(<span class="st">'Velocidade (km/h)'</span>)</span>
-<span id="cb6-12"><a href="#cb6-12"></a>ax.set_ylabel(<span class="st">'Tempo de viagem (seg)'</span>)</span>
-<span id="cb6-13"><a href="#cb6-13"></a>fig.show()</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-3"><a href="#cb6-3"></a>(</span>
+<span id="cb6-4"><a href="#cb6-4"></a>    ggplot(ndsbr_valid_speed, aes(x <span class="op">=</span> <span class="st">'spd_kmh'</span>))</span>
+<span id="cb6-5"><a href="#cb6-5"></a>    <span class="op">+</span> geom_histogram(binwidth <span class="op">=</span> <span class="dv">10</span>, fill <span class="op">=</span> <span class="st">'#00496d'</span>, color <span class="op">=</span> <span class="st">'grey'</span>)</span>
+<span id="cb6-6"><a href="#cb6-6"></a>    <span class="op">+</span> labs(</span>
+<span id="cb6-7"><a href="#cb6-7"></a>        x <span class="op">=</span> <span class="st">'Velocidade (km/h)'</span>,</span>
+<span id="cb6-8"><a href="#cb6-8"></a>        y <span class="op">=</span> <span class="st">'Tempo de viagem (seg)'</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a>    )</span>
+<span id="cb6-10"><a href="#cb6-10"></a>    <span class="op">+</span> theme_bw()</span>
+<span id="cb6-11"><a href="#cb6-11"></a>    <span class="op">+</span> scale_x_continuous(breaks <span class="op">=</span> np.arange(<span class="dv">0</span>, <span class="dv">160</span>, <span class="dv">10</span>))</span>
+<span id="cb6-12"><a href="#cb6-12"></a>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display page-columns page-full">
-<div id="fig-hist-vel-filter" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full">
-<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div class="cell-output cell-output-display">
+<div id="fig-hist-vel-filter" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-hist-vel-filter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="report_files/figure-html/fig-hist-vel-filter-output-1.png" width="618" height="429" class="figure-img">
+<img src="report_files/figure-html/fig-hist-vel-filter-output-1.png" width="672" height="480" class="figure-img">
 </div>
-<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-hist-vel-filter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hist-vel-filter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figura&nbsp;2: Distribuição da velocidade praticada acima de 0 km/h
 </figcaption>
 </figure>
@@ -361,92 +360,188 @@ Figura&nbsp;2: Distribuição da velocidade praticada acima de 0 km/h
 </div>
 </section>
 </section>
-<section id="velocidades-nas-vias-de-curitiba" class="level1 page-columns page-full" data-number="3">
+<section id="velocidades-nas-vias-de-curitiba" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Velocidades nas vias de Curitiba</h1>
 <p>O processo de cálculo das velocidades nas vias de Curitiba inicia com a importação dos eixos de via, fornecidos pelo IPPUC<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. A <a href="#fig-vias" class="quarto-xref">Figura&nbsp;3</a> apresenta um mapa dessas vias.</p>
-<div id="cell-fig-vias" class="cell page-columns page-full" data-execution_count="7">
+<div id="import-vias" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Código</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>vias_url <span class="op">=</span> <span class="st">'https://ippuc.org.br/geodownloads/SHAPES_SIRGAS/EIXO_RUA_SIRGAS.zip'</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a>vias <span class="op">=</span> gpd.read_file(vias_url, encoding<span class="op">=</span><span class="st">'latin1'</span>)</span>
-<span id="cb7-3"><a href="#cb7-3"></a></span>
-<span id="cb7-4"><a href="#cb7-4"></a>vias.plot(color <span class="op">=</span> <span class="st">'#00496d'</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-2"><a href="#cb7-2"></a>vias <span class="op">=</span> gpd.read_file(vias_url, encoding<span class="op">=</span><span class="st">'latin1'</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display page-columns page-full">
-<div id="fig-vias" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full">
-<figure class="quarto-float quarto-float-fig figure page-columns page-full">
-<div aria-describedby="fig-vias-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="report_files/figure-html/fig-vias-output-1.png" width="296" height="425" class="figure-img">
 </div>
-<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-vias-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="cell-fig-vias" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>(</span>
+<span id="cb8-2"><a href="#cb8-2"></a>    ggplot(vias)</span>
+<span id="cb8-3"><a href="#cb8-3"></a>    <span class="op">+</span> geom_map(color <span class="op">=</span> <span class="st">'#00496d'</span>, size <span class="op">=</span> <span class="fl">0.3</span>)</span>
+<span id="cb8-4"><a href="#cb8-4"></a>    <span class="op">+</span> theme_bw()</span>
+<span id="cb8-5"><a href="#cb8-5"></a>    <span class="op">+</span> coord_equal()</span>
+<span id="cb8-6"><a href="#cb8-6"></a>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-vias" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-vias-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="report_files/figure-html/fig-vias-output-1.png" width="672" height="480" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-vias-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figura&nbsp;3: Mapa das vias de Curitiba
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div id="calc-extensao" class="cell" data-execution_count="8">
+<div id="calc-extensao" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Código</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># Calculate the extension of the network using geopandas</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a>dist_vias <span class="op">=</span> vias.length.<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span></span>
-<span id="cb8-3"><a href="#cb8-3"></a></span>
-<span id="cb8-4"><a href="#cb8-4"></a>ndsbr_nearest <span class="op">=</span> gpd.sjoin_nearest(</span>
-<span id="cb8-5"><a href="#cb8-5"></a>    ndsbr_valid_speed, </span>
-<span id="cb8-6"><a href="#cb8-6"></a>    vias, </span>
-<span id="cb8-7"><a href="#cb8-7"></a>    how<span class="op">=</span><span class="st">'left'</span>,</span>
-<span id="cb8-8"><a href="#cb8-8"></a>    max_distance<span class="op">=</span><span class="dv">20</span></span>
-<span id="cb8-9"><a href="#cb8-9"></a>)</span>
-<span id="cb8-10"><a href="#cb8-10"></a></span>
-<span id="cb8-11"><a href="#cb8-11"></a>v85_spd <span class="op">=</span> ndsbr_nearest.groupby(<span class="st">'CHAVE'</span>)[<span class="st">'spd_kmh'</span>].quantile(<span class="fl">0.85</span>).reset_index()</span>
-<span id="cb8-12"><a href="#cb8-12"></a>vias_v85 <span class="op">=</span> pd.merge(vias, v85_spd, how<span class="op">=</span><span class="st">'left'</span>, on<span class="op">=</span><span class="st">'CHAVE'</span>)</span>
-<span id="cb8-13"><a href="#cb8-13"></a></span>
-<span id="cb8-14"><a href="#cb8-14"></a><span class="co"># Filter vias_v85 where spd_kmh is not NaN</span></span>
-<span id="cb8-15"><a href="#cb8-15"></a>vias_v85_valid <span class="op">=</span> vias_v85.dropna(subset<span class="op">=</span>[<span class="st">'spd_kmh'</span>])</span>
-<span id="cb8-16"><a href="#cb8-16"></a>dist_vias_sample <span class="op">=</span> vias_v85_valid.length.<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># Calculate the extension of the network using geopandas</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>dist_vias <span class="op">=</span> vias.length.<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a></span>
+<span id="cb9-4"><a href="#cb9-4"></a>ndsbr_nearest <span class="op">=</span> gpd.sjoin_nearest(</span>
+<span id="cb9-5"><a href="#cb9-5"></a>    ndsbr_valid_speed, </span>
+<span id="cb9-6"><a href="#cb9-6"></a>    vias, </span>
+<span id="cb9-7"><a href="#cb9-7"></a>    how<span class="op">=</span><span class="st">'left'</span>,</span>
+<span id="cb9-8"><a href="#cb9-8"></a>    max_distance<span class="op">=</span><span class="dv">20</span></span>
+<span id="cb9-9"><a href="#cb9-9"></a>)</span>
+<span id="cb9-10"><a href="#cb9-10"></a></span>
+<span id="cb9-11"><a href="#cb9-11"></a>v85_spd <span class="op">=</span> ndsbr_nearest.groupby(<span class="st">'CHAVE'</span>)[<span class="st">'spd_kmh'</span>].quantile(<span class="fl">0.85</span>).reset_index()</span>
+<span id="cb9-12"><a href="#cb9-12"></a>vias_v85 <span class="op">=</span> pd.merge(vias, v85_spd, how<span class="op">=</span><span class="st">'left'</span>, on<span class="op">=</span><span class="st">'CHAVE'</span>)</span>
+<span id="cb9-13"><a href="#cb9-13"></a></span>
+<span id="cb9-14"><a href="#cb9-14"></a><span class="co"># Filter vias_v85 where spd_kmh is not NaN</span></span>
+<span id="cb9-15"><a href="#cb9-15"></a>vias_v85_valid <span class="op">=</span> vias_v85.dropna(subset<span class="op">=</span>[<span class="st">'spd_kmh'</span>])</span>
+<span id="cb9-16"><a href="#cb9-16"></a>dist_vias_sample <span class="op">=</span> vias_v85_valid.length.<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>A malha de eixos viários de Curitiba apresenta uma extensão total de 4533.38 km. Ao considerar apenas as vias com a amostra do NDS-BR em velocidades acima de 5 km/h, a extensão das vias de Curitiba fica de 2078.41 km. A <a href="#fig-vias-v85" class="quarto-xref">Figura&nbsp;4</a> apresenta a incidência de V85 nas vias de Curitiba. Pouco mais de 700 km de vias de Curitiba apresentam V85 entre 40 e 50 km/h, sendo o intervalo com o maior valor.</p>
-<div id="calc-v85-dist" class="cell" data-execution_count="9">
+<div id="calc-v85-dist" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Código</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># Transform spd_kmh into discrete values</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a>vias_v85_valid[<span class="st">'spd_kmh_cat'</span>] <span class="op">=</span> pd.cut(</span>
-<span id="cb9-3"><a href="#cb9-3"></a>    vias_v85_valid[<span class="st">'spd_kmh'</span>], </span>
-<span id="cb9-4"><a href="#cb9-4"></a>    [<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">50</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">80</span>, <span class="dv">90</span>, <span class="dv">100</span>, <span class="dv">110</span>, <span class="dv">120</span>],</span>
-<span id="cb9-5"><a href="#cb9-5"></a>    labels<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">50</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">80</span>, <span class="dv">90</span>, <span class="dv">100</span>, <span class="dv">110</span>]</span>
-<span id="cb9-6"><a href="#cb9-6"></a>)</span>
-<span id="cb9-7"><a href="#cb9-7"></a></span>
-<span id="cb9-8"><a href="#cb9-8"></a>vias_v85_valid[<span class="st">'dist'</span>] <span class="op">=</span> vias_v85_valid.geometry.length</span>
-<span id="cb9-9"><a href="#cb9-9"></a></span>
-<span id="cb9-10"><a href="#cb9-10"></a>tbl_v85_dist <span class="op">=</span> vias_v85_valid.groupby(<span class="st">'spd_kmh_cat'</span>)[<span class="st">'dist'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span></span>
-<span id="cb9-11"><a href="#cb9-11"></a>tbl_v85_dist <span class="op">=</span> tbl_v85_dist.to_frame().reset_index()</span>
-<span id="cb9-12"><a href="#cb9-12"></a>tbl_v85_dist[<span class="st">'dist'</span>] <span class="op">=</span> tbl_v85_dist[<span class="st">'dist'</span>].astype(<span class="st">'float'</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># Transform spd_kmh into discrete values</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a>vias_v85_valid[<span class="st">'spd_kmh_cat'</span>] <span class="op">=</span> pd.cut(</span>
+<span id="cb10-3"><a href="#cb10-3"></a>    vias_v85_valid[<span class="st">'spd_kmh'</span>], </span>
+<span id="cb10-4"><a href="#cb10-4"></a>    [<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">50</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">80</span>, <span class="dv">90</span>, <span class="dv">100</span>, <span class="dv">110</span>, <span class="dv">120</span>],</span>
+<span id="cb10-5"><a href="#cb10-5"></a>    labels<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">50</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">80</span>, <span class="dv">90</span>, <span class="dv">100</span>, <span class="dv">110</span>]</span>
+<span id="cb10-6"><a href="#cb10-6"></a>)</span>
+<span id="cb10-7"><a href="#cb10-7"></a></span>
+<span id="cb10-8"><a href="#cb10-8"></a>vias_v85_valid[<span class="st">'dist'</span>] <span class="op">=</span> vias_v85_valid.geometry.length</span>
+<span id="cb10-9"><a href="#cb10-9"></a></span>
+<span id="cb10-10"><a href="#cb10-10"></a>tbl_v85_dist <span class="op">=</span> vias_v85_valid.groupby(<span class="st">'spd_kmh_cat'</span>)[<span class="st">'dist'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span></span>
+<span id="cb10-11"><a href="#cb10-11"></a>tbl_v85_dist <span class="op">=</span> tbl_v85_dist.to_frame().reset_index()</span>
+<span id="cb10-12"><a href="#cb10-12"></a>tbl_v85_dist[<span class="st">'dist'</span>] <span class="op">=</span> tbl_v85_dist[<span class="st">'dist'</span>].astype(<span class="st">'float'</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="cell-fig-vias-v85" class="cell page-columns page-full" data-execution_count="10">
+<div id="cell-fig-vias-v85" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Código</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>base_plot <span class="op">=</span> vias_v85.plot(color<span class="op">=</span><span class="st">'#dbdbdb'</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="cb10-2"><a href="#cb10-2"></a>spd_plot <span class="op">=</span> vias_v85_valid.plot(ax<span class="op">=</span>base_plot, linewidth<span class="op">=</span><span class="fl">0.5</span>, column<span class="op">=</span><span class="st">'spd_kmh'</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>(</span>
+<span id="cb11-2"><a href="#cb11-2"></a>    ggplot(vias_v85)</span>
+<span id="cb11-3"><a href="#cb11-3"></a>    <span class="op">+</span> geom_map(color<span class="op">=</span><span class="st">'#dbdbdb'</span>, size<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb11-4"><a href="#cb11-4"></a>    <span class="op">+</span> geom_map(vias_v85_valid, aes(color <span class="op">=</span> <span class="st">'spd_kmh'</span>), size<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb11-5"><a href="#cb11-5"></a>    <span class="op">+</span> theme_bw()</span>
+<span id="cb11-6"><a href="#cb11-6"></a>    <span class="op">+</span> coord_equal()</span>
+<span id="cb11-7"><a href="#cb11-7"></a>    <span class="op">+</span> labs(color <span class="op">=</span> <span class="st">'Velocidade (km/h)'</span>)</span>
+<span id="cb11-8"><a href="#cb11-8"></a>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display page-columns page-full">
-<div id="fig-vias-v85" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full">
-<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div class="cell-output cell-output-display">
+<div id="fig-vias-v85" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-vias-v85-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="report_files/figure-html/fig-vias-v85-output-1.png" width="296" height="425" class="figure-img">
+<img src="report_files/figure-html/fig-vias-v85-output-1.png" width="672" height="480" class="figure-img">
 </div>
-<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-vias-v85-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-vias-v85-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figura&nbsp;4: V85 nas vias de Curitiba
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<ul>
-<li>Tempo de viagem nas vias</li>
-<li>Recorte de hierarquia (2, 3, 4): quantos kms de amostra restante?</li>
-</ul>
+<p>Por fim, a <a href="#fig-recorte-hierarquia" class="quarto-xref">Figura&nbsp;5</a> apresenta as vias locais, coletoras e arteriais, que serão utilizadas como amostra do estudo. Ao remover as vias de trânsito rápido, resta uma extensão de 1995.78 quilômetros de vias.</p>
+<div id="cell-fig-recorte-hierarquia" class="cell" data-execution_count="12">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>mask <span class="op">=</span> vias_v85_valid[<span class="st">'HIERARQUIA'</span>].isin(</span>
+<span id="cb12-2"><a href="#cb12-2"></a>    [<span class="st">'2'</span>, <span class="st">'3'</span>, <span class="st">'4'</span>]</span>
+<span id="cb12-3"><a href="#cb12-3"></a>)</span>
+<span id="cb12-4"><a href="#cb12-4"></a></span>
+<span id="cb12-5"><a href="#cb12-5"></a>vias_valid_hierarquia <span class="op">=</span> vias_v85_valid[mask]</span>
+<span id="cb12-6"><a href="#cb12-6"></a></span>
+<span id="cb12-7"><a href="#cb12-7"></a>(</span>
+<span id="cb12-8"><a href="#cb12-8"></a>    ggplot(vias_v85)</span>
+<span id="cb12-9"><a href="#cb12-9"></a>    <span class="op">+</span> geom_map(color<span class="op">=</span><span class="st">'#dbdbdb'</span>, size<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb12-10"><a href="#cb12-10"></a>    <span class="op">+</span> geom_map(vias_valid_hierarquia, color<span class="op">=</span><span class="st">'#00496d'</span>, size<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb12-11"><a href="#cb12-11"></a>    <span class="op">+</span> theme_bw()</span>
+<span id="cb12-12"><a href="#cb12-12"></a>    <span class="op">+</span> coord_equal()</span>
+<span id="cb12-13"><a href="#cb12-13"></a>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-recorte-hierarquia" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-recorte-hierarquia-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="report_files/figure-html/fig-recorte-hierarquia-output-1.png" width="672" height="480" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-recorte-hierarquia-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;5: Recorte de hierarquia
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-fig-hierarquia" class="cell" data-execution_count="13">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a>(</span>
+<span id="cb13-2"><a href="#cb13-2"></a>    ggplot(vias_valid_hierarquia)</span>
+<span id="cb13-3"><a href="#cb13-3"></a>    <span class="op">+</span> geom_histogram(</span>
+<span id="cb13-4"><a href="#cb13-4"></a>        aes(x<span class="op">=</span><span class="st">'spd_kmh'</span>),</span>
+<span id="cb13-5"><a href="#cb13-5"></a>        binwidth<span class="op">=</span><span class="dv">5</span>, </span>
+<span id="cb13-6"><a href="#cb13-6"></a>        fill<span class="op">=</span><span class="st">'#00496d'</span>, </span>
+<span id="cb13-7"><a href="#cb13-7"></a>        color<span class="op">=</span><span class="st">'grey'</span></span>
+<span id="cb13-8"><a href="#cb13-8"></a>    )</span>
+<span id="cb13-9"><a href="#cb13-9"></a>    <span class="op">+</span> labs(x<span class="op">=</span><span class="st">'Velocidade (km/h)'</span>, y<span class="op">=</span><span class="st">'Quantidade de trechos de vias'</span>)</span>
+<span id="cb13-10"><a href="#cb13-10"></a>    <span class="op">+</span> theme_bw()</span>
+<span id="cb13-11"><a href="#cb13-11"></a>    <span class="op">+</span> scale_x_continuous(breaks<span class="op">=</span>np.arange(<span class="dv">0</span>, <span class="dv">130</span>, <span class="dv">10</span>))</span>
+<span id="cb13-12"><a href="#cb13-12"></a>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-hierarquia" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-hierarquia-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="report_files/figure-html/fig-hierarquia-output-1.png" width="672" height="480" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hierarquia-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6: Distribuição de V85
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-fig-hierarquia-dist" class="cell" data-execution_count="14">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>(</span>
+<span id="cb14-2"><a href="#cb14-2"></a>    ggplot(vias_valid_hierarquia)</span>
+<span id="cb14-3"><a href="#cb14-3"></a>    <span class="op">+</span> geom_density(aes(x<span class="op">=</span><span class="st">'spd_kmh'</span>), fill<span class="op">=</span><span class="st">'#00496d'</span>, alpha<span class="op">=</span><span class="fl">0.70</span>)</span>
+<span id="cb14-4"><a href="#cb14-4"></a>    <span class="op">+</span> theme_bw()</span>
+<span id="cb14-5"><a href="#cb14-5"></a>    <span class="op">+</span> facet_grid(rows<span class="op">=</span><span class="st">'HIERARQUIA'</span>)</span>
+<span id="cb14-6"><a href="#cb14-6"></a>    <span class="op">+</span> scale_x_continuous(limits<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">90</span>], breaks<span class="op">=</span>np.arange(<span class="dv">0</span>, <span class="dv">90</span>, <span class="dv">10</span>))</span>
+<span id="cb14-7"><a href="#cb14-7"></a>    <span class="op">+</span> labs(x<span class="op">=</span><span class="st">'V85 (km/h)'</span>)</span>
+<span id="cb14-8"><a href="#cb14-8"></a>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-hierarquia-dist" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-hierarquia-dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="report_files/figure-html/fig-hierarquia-dist-output-1.png" width="672" height="480" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hierarquia-dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;7: Distribuição de V85 por hierarquia
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 </section>
 <section id="fiscalização-eletrônica" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Fiscalização eletrônica</h1>
@@ -454,14 +549,289 @@ Figura&nbsp;4: V85 nas vias de Curitiba
 <li>Quantidade de radares por tipo</li>
 <li>Mapeamento dos radares</li>
 </ul>
-<section id="analise-combinada-da-velocidade-com-os-radares" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="analise-combinada-da-velocidade-com-os-radares"><span class="header-section-number">4.1</span> Analise combinada da velocidade com os radares</h2>
+<div id="radares" class="cell" data-execution_count="15">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a>radar_path <span class="op">=</span> <span class="st">'../data/radar.geojson'</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a>radar <span class="op">=</span> gpd.read_file(radar_path)</span>
+<span id="cb15-3"><a href="#cb15-3"></a>radar_utm <span class="op">=</span> radar.to_crs(<span class="dv">31982</span>).dropna()</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="cell-radar-tipo" class="cell" data-execution_count="16">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a>(</span>
+<span id="cb16-2"><a href="#cb16-2"></a>    ggplot(vias)</span>
+<span id="cb16-3"><a href="#cb16-3"></a>    <span class="op">+</span> geom_map(color<span class="op">=</span><span class="st">'#bcbcbc'</span>, size<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb16-4"><a href="#cb16-4"></a>    <span class="op">+</span> geom_map(radar_utm, aes(color<span class="op">=</span><span class="st">'tipo'</span>), size<span class="op">=</span><span class="fl">1.5</span>, shape<span class="op">=</span><span class="st">'o'</span>, fill<span class="op">=</span><span class="va">None</span>)</span>
+<span id="cb16-5"><a href="#cb16-5"></a>    <span class="op">+</span> theme_bw()</span>
+<span id="cb16-6"><a href="#cb16-6"></a>    <span class="op">+</span> coord_equal()</span>
+<span id="cb16-7"><a href="#cb16-7"></a>    <span class="op">+</span> labs(color <span class="op">=</span> <span class="st">'Tipo'</span>)</span>
+<span id="cb16-8"><a href="#cb16-8"></a>    <span class="op">+</span> scale_color_manual(values<span class="op">=</span>[<span class="st">'#00496d'</span>, <span class="st">'#f05f22'</span>])</span>
+<span id="cb16-9"><a href="#cb16-9"></a>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="radar-tipo" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="report_files/figure-html/radar-tipo-output-1.png" width="672" height="480" class="figure-img"></p>
+<figcaption>Radares por tipo</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-radar-vel" class="cell" data-execution_count="17">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a>radar_vel <span class="op">=</span> radar_utm.query(<span class="st">'tipo == "Controlador" &amp; ctrl_vel == 1'</span>)</span>
+<span id="cb17-2"><a href="#cb17-2"></a></span>
+<span id="cb17-3"><a href="#cb17-3"></a>(</span>
+<span id="cb17-4"><a href="#cb17-4"></a>    ggplot(vias)</span>
+<span id="cb17-5"><a href="#cb17-5"></a>    <span class="op">+</span> geom_map(color<span class="op">=</span><span class="st">'#bcbcbc'</span>, size<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb17-6"><a href="#cb17-6"></a>    <span class="op">+</span> geom_map(radar_vel, color<span class="op">=</span><span class="st">'#00496d'</span>, size<span class="op">=</span><span class="fl">1.5</span>, shape<span class="op">=</span><span class="st">'o'</span>, fill<span class="op">=</span><span class="va">None</span>)</span>
+<span id="cb17-7"><a href="#cb17-7"></a>    <span class="op">+</span> theme_bw()</span>
+<span id="cb17-8"><a href="#cb17-8"></a>    <span class="op">+</span> coord_equal()</span>
+<span id="cb17-9"><a href="#cb17-9"></a>    <span class="op">+</span> labs(color <span class="op">=</span> <span class="st">'Tipo'</span>)</span>
+<span id="cb17-10"><a href="#cb17-10"></a>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="radar-vel" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="report_files/figure-html/radar-vel-output-1.png" width="672" height="480" class="figure-img"></p>
+<figcaption>Radares de controle de velocidade</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="análise-combinada-da-velocidade-com-os-radares" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Análise combinada da velocidade com os radares</h1>
 <ul>
 <li>Existe uma diferença significativa de v85 entre as vias que tem radar e as que não tem radar?</li>
 <li>Quais trechos de via deveriam ter radar e não tem?</li>
-<li>Boxplot: presença de radar x velocidade v85</li>
+<li>Regressão logística
+<ul>
+<li>Presença de radar x velocidade v85</li>
+<li>Igualizar a amostra entre as classes (com e sem radar)</li>
+</ul></li>
+<li>Comparação:
+<ul>
+<li>via de alta velocidade com radar x via de alta velocidade sem radar</li>
+<li>via de baixa velocidade com radar x via de baixa velocidade sem radar</li>
+<li>Limiar da velocidade insegura: 40 km/h</li>
+</ul></li>
 </ul>
-</section>
+<div id="381cfdb3" class="cell" data-execution_count="18">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a>radar_vias <span class="op">=</span> gpd.sjoin_nearest(</span>
+<span id="cb18-2"><a href="#cb18-2"></a>    radar_vel,</span>
+<span id="cb18-3"><a href="#cb18-3"></a>    vias_valid_hierarquia[[<span class="st">'CHAVE'</span>, <span class="st">'geometry'</span>]],</span>
+<span id="cb18-4"><a href="#cb18-4"></a>    how<span class="op">=</span><span class="st">'left'</span>,</span>
+<span id="cb18-5"><a href="#cb18-5"></a>    max_distance<span class="op">=</span><span class="dv">20</span></span>
+<span id="cb18-6"><a href="#cb18-6"></a>).dropna()</span>
+<span id="cb18-7"><a href="#cb18-7"></a></span>
+<span id="cb18-8"><a href="#cb18-8"></a>radar_vias_count <span class="op">=</span> radar_vias[<span class="st">'CHAVE'</span>].value_counts().to_frame().reset_index()</span>
+<span id="cb18-9"><a href="#cb18-9"></a></span>
+<span id="cb18-10"><a href="#cb18-10"></a><span class="co"># if count &gt; 1, presenca_radar is true</span></span>
+<span id="cb18-11"><a href="#cb18-11"></a>radar_vias_count[<span class="st">'presenca_radar'</span>] <span class="op">=</span> radar_vias_count[<span class="st">'count'</span>].<span class="bu">apply</span>(</span>
+<span id="cb18-12"><a href="#cb18-12"></a>    <span class="kw">lambda</span> x: <span class="va">True</span> <span class="cf">if</span> x <span class="op">&gt;=</span> <span class="dv">1</span> <span class="cf">else</span> <span class="va">False</span></span>
+<span id="cb18-13"><a href="#cb18-13"></a>)</span>
+<span id="cb18-14"><a href="#cb18-14"></a></span>
+<span id="cb18-15"><a href="#cb18-15"></a>vias_radares <span class="op">=</span> pd.merge(</span>
+<span id="cb18-16"><a href="#cb18-16"></a>    vias_valid_hierarquia,</span>
+<span id="cb18-17"><a href="#cb18-17"></a>    radar_vias_count,</span>
+<span id="cb18-18"><a href="#cb18-18"></a>    how<span class="op">=</span><span class="st">'left'</span>,</span>
+<span id="cb18-19"><a href="#cb18-19"></a>    on<span class="op">=</span><span class="st">'CHAVE'</span></span>
+<span id="cb18-20"><a href="#cb18-20"></a>)</span>
+<span id="cb18-21"><a href="#cb18-21"></a></span>
+<span id="cb18-22"><a href="#cb18-22"></a>vias_radares[<span class="st">'presenca_radar'</span>] <span class="op">=</span> vias_radares[<span class="st">'presenca_radar'</span>].fillna(<span class="va">False</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="cell-fig-radar-boxplot" class="cell" data-execution_count="19">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1"></a>random.seed(<span class="dv">123</span>)</span>
+<span id="cb19-2"><a href="#cb19-2"></a></span>
+<span id="cb19-3"><a href="#cb19-3"></a>n_com_radar <span class="op">=</span> vias_radares.query(<span class="st">'presenca_radar == True'</span>).shape[<span class="dv">0</span>]</span>
+<span id="cb19-4"><a href="#cb19-4"></a></span>
+<span id="cb19-5"><a href="#cb19-5"></a><span class="co"># Criar um df só com vias com radar</span></span>
+<span id="cb19-6"><a href="#cb19-6"></a>vias_com_radar <span class="op">=</span> vias_radares.query(<span class="st">'presenca_radar == True'</span>)</span>
+<span id="cb19-7"><a href="#cb19-7"></a></span>
+<span id="cb19-8"><a href="#cb19-8"></a><span class="co"># Criar uma amostra aleatoria só de vias sem radar</span></span>
+<span id="cb19-9"><a href="#cb19-9"></a>vias_sem_radar <span class="op">=</span> vias_radares.query(</span>
+<span id="cb19-10"><a href="#cb19-10"></a>    <span class="st">'presenca_radar == False'</span></span>
+<span id="cb19-11"><a href="#cb19-11"></a>).sample(n_com_radar)</span>
+<span id="cb19-12"><a href="#cb19-12"></a></span>
+<span id="cb19-13"><a href="#cb19-13"></a><span class="co"># Unir as amostras</span></span>
+<span id="cb19-14"><a href="#cb19-14"></a>vias_radares_sample <span class="op">=</span> pd.concat([vias_com_radar, vias_sem_radar])</span>
+<span id="cb19-15"><a href="#cb19-15"></a></span>
+<span id="cb19-16"><a href="#cb19-16"></a>(</span>
+<span id="cb19-17"><a href="#cb19-17"></a>    ggplot(vias_radares_sample, aes(x<span class="op">=</span><span class="st">'presenca_radar'</span>, y<span class="op">=</span><span class="st">'spd_kmh'</span>))</span>
+<span id="cb19-18"><a href="#cb19-18"></a>    <span class="op">+</span> geom_boxplot(aes(fill<span class="op">=</span><span class="st">'presenca_radar'</span>))</span>
+<span id="cb19-19"><a href="#cb19-19"></a>    <span class="op">+</span> theme_bw()</span>
+<span id="cb19-20"><a href="#cb19-20"></a>    <span class="op">+</span> labs(</span>
+<span id="cb19-21"><a href="#cb19-21"></a>        x<span class="op">=</span><span class="st">'Presença de radar'</span>,</span>
+<span id="cb19-22"><a href="#cb19-22"></a>        y<span class="op">=</span><span class="st">'V85 (km/h)'</span>,</span>
+<span id="cb19-23"><a href="#cb19-23"></a>        caption<span class="op">=</span><span class="ss">f'Amostra equalizada entre as classes (n = </span><span class="sc">{</span>n_com_radar<span class="sc">}</span><span class="ss">)'</span></span>
+<span id="cb19-24"><a href="#cb19-24"></a>    )</span>
+<span id="cb19-25"><a href="#cb19-25"></a>    <span class="op">+</span> theme(legend_position<span class="op">=</span><span class="st">'none'</span>)</span>
+<span id="cb19-26"><a href="#cb19-26"></a>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-radar-boxplot" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-radar-boxplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="report_files/figure-html/fig-radar-boxplot-output-1.png" width="672" height="480" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-radar-boxplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;8: Presença de radar x velocidade v85
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-fig-radar-map-vias" class="cell" data-execution_count="20">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1"></a>(</span>
+<span id="cb20-2"><a href="#cb20-2"></a>    ggplot()</span>
+<span id="cb20-3"><a href="#cb20-3"></a>    <span class="op">+</span> geom_map(</span>
+<span id="cb20-4"><a href="#cb20-4"></a>        vias_radares,</span>
+<span id="cb20-5"><a href="#cb20-5"></a>        aes(color<span class="op">=</span><span class="st">'presenca_radar'</span>, fill<span class="op">=</span><span class="st">'presenca_radar'</span>),</span>
+<span id="cb20-6"><a href="#cb20-6"></a>        size<span class="op">=</span><span class="fl">0.5</span></span>
+<span id="cb20-7"><a href="#cb20-7"></a>    )</span>
+<span id="cb20-8"><a href="#cb20-8"></a>    <span class="op">+</span> theme_bw()</span>
+<span id="cb20-9"><a href="#cb20-9"></a>    <span class="op">+</span> labs(color<span class="op">=</span><span class="st">'Presença de radar'</span>, fill<span class="op">=</span><span class="st">'Presença de radar'</span>)</span>
+<span id="cb20-10"><a href="#cb20-10"></a>    <span class="op">+</span> coord_equal()</span>
+<span id="cb20-11"><a href="#cb20-11"></a>    <span class="op">+</span> scale_color_manual(values<span class="op">=</span>[<span class="st">'#e1e1e1'</span>, <span class="st">'#00496d'</span>])</span>
+<span id="cb20-12"><a href="#cb20-12"></a>    <span class="op">+</span> scale_fill_manual(values<span class="op">=</span>[<span class="st">'#e1e1e1'</span>, <span class="st">'#00496d'</span>])</span>
+<span id="cb20-13"><a href="#cb20-13"></a>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-radar-map-vias" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-radar-map-vias-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="report_files/figure-html/fig-radar-map-vias-output-1.png" width="672" height="480" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-radar-map-vias-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;9: Trechos de vias com radares
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="28fbbbb3" class="cell" data-execution_count="21">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1"></a><span class="co"># Creating a new variable based on presenca_radar and spd_kmh</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a>vias_radares[<span class="st">'tipo_spd'</span>] <span class="op">=</span> vias_radares.<span class="bu">apply</span>(</span>
+<span id="cb21-3"><a href="#cb21-3"></a>    <span class="kw">lambda</span> x: <span class="st">'segura'</span> <span class="cf">if</span> x[<span class="st">'spd_kmh'</span>] <span class="op">&lt;</span> <span class="dv">40</span> <span class="cf">else</span> <span class="st">'insegura'</span>, axis<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb21-4"><a href="#cb21-4"></a>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="1df03e70" class="cell" data-execution_count="22">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1"></a>n_radar_seguro <span class="op">=</span> vias_radares.query(<span class="st">'presenca_radar == True &amp; tipo_spd == "segura"'</span>).shape[<span class="dv">0</span>]</span>
+<span id="cb22-2"><a href="#cb22-2"></a></span>
+<span id="cb22-3"><a href="#cb22-3"></a><span class="co"># Criar um df só com vias com radar</span></span>
+<span id="cb22-4"><a href="#cb22-4"></a>vias_com_radar_seguro <span class="op">=</span> vias_radares.query(<span class="st">'presenca_radar == True &amp; tipo_spd == "segura"'</span>)</span>
+<span id="cb22-5"><a href="#cb22-5"></a></span>
+<span id="cb22-6"><a href="#cb22-6"></a><span class="co"># Criar uma amostra aleatoria só de vias sem radar</span></span>
+<span id="cb22-7"><a href="#cb22-7"></a>random.seed(<span class="dv">42</span>)</span>
+<span id="cb22-8"><a href="#cb22-8"></a></span>
+<span id="cb22-9"><a href="#cb22-9"></a>vias_sem_radar_seguro <span class="op">=</span> vias_radares.query(</span>
+<span id="cb22-10"><a href="#cb22-10"></a>    <span class="st">'presenca_radar == False &amp; tipo_spd == "segura"'</span></span>
+<span id="cb22-11"><a href="#cb22-11"></a>).sample(n_radar_seguro)</span>
+<span id="cb22-12"><a href="#cb22-12"></a></span>
+<span id="cb22-13"><a href="#cb22-13"></a><span class="co"># Unir as amostras</span></span>
+<span id="cb22-14"><a href="#cb22-14"></a>vias_seguro_sample <span class="op">=</span> pd.concat([vias_com_radar_seguro, vias_sem_radar_seguro])</span>
+<span id="cb22-15"><a href="#cb22-15"></a></span>
+<span id="cb22-16"><a href="#cb22-16"></a></span>
+<span id="cb22-17"><a href="#cb22-17"></a>(</span>
+<span id="cb22-18"><a href="#cb22-18"></a>    ggplot(vias_seguro_sample)</span>
+<span id="cb22-19"><a href="#cb22-19"></a>    <span class="op">+</span> geom_boxplot(aes(x<span class="op">=</span><span class="st">'presenca_radar'</span>, y<span class="op">=</span><span class="st">'spd_kmh'</span>))</span>
+<span id="cb22-20"><a href="#cb22-20"></a>    <span class="op">+</span> theme_bw()</span>
+<span id="cb22-21"><a href="#cb22-21"></a>    <span class="op">+</span> labs(x<span class="op">=</span><span class="st">'Presença de radar'</span>, y<span class="op">=</span><span class="st">'V85 (km/h)'</span>, caption<span class="op">=</span><span class="ss">f'Amostra equalizada entre as classes (n=</span><span class="sc">{</span>n_radar_seguro<span class="sc">}</span><span class="ss">)'</span>)</span>
+<span id="cb22-22"><a href="#cb22-22"></a>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="report_files/figure-html/cell-23-output-1.png" width="672" height="480" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="fafd49c7" class="cell" data-execution_count="23">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1"></a>(</span>
+<span id="cb23-2"><a href="#cb23-2"></a>    ggplot(vias_radares.query(<span class="st">'tipo_spd == "insegura"'</span>))</span>
+<span id="cb23-3"><a href="#cb23-3"></a>    <span class="op">+</span> geom_boxplot(aes(x<span class="op">=</span><span class="st">'presenca_radar'</span>, y<span class="op">=</span><span class="st">'spd_kmh'</span>))</span>
+<span id="cb23-4"><a href="#cb23-4"></a>    <span class="op">+</span> theme_bw()</span>
+<span id="cb23-5"><a href="#cb23-5"></a>    <span class="op">+</span> labs(x<span class="op">=</span><span class="st">'Presença de radar'</span>, y<span class="op">=</span><span class="st">'V85 (km/h)'</span>)</span>
+<span id="cb23-6"><a href="#cb23-6"></a>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="report_files/figure-html/cell-24-output-1.png" width="672" height="480" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1"></a><span class="kw">def</span> filter_vias_semradar(df: pd.DataFrame, n: <span class="bu">int</span>) <span class="op">-&gt;</span> pd.DataFrame:</span>
+<span id="cb24-2"><a href="#cb24-2"></a>    df <span class="op">=</span> df.query(<span class="ss">f'presenca_radar == False &amp; spd_kmh &gt; </span><span class="sc">{</span>n<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb24-3"><a href="#cb24-3"></a>    <span class="cf">return</span> df</span>
+<span id="cb24-4"><a href="#cb24-4"></a></span>
+<span id="cb24-5"><a href="#cb24-5"></a><span class="kw">def</span> plot_vias_semradar(df: pd.DataFrame, df_vias: pd.DataFrame, n: <span class="bu">int</span>):</span>
+<span id="cb24-6"><a href="#cb24-6"></a>    plot <span class="op">=</span> (</span>
+<span id="cb24-7"><a href="#cb24-7"></a>        ggplot()</span>
+<span id="cb24-8"><a href="#cb24-8"></a>        <span class="op">+</span> geom_map(df_vias, color<span class="op">=</span><span class="st">'#dbdbdb'</span>, size<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb24-9"><a href="#cb24-9"></a>        <span class="op">+</span> geom_map(df, color<span class="op">=</span><span class="st">'#f05f22'</span>, size<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb24-10"><a href="#cb24-10"></a>        <span class="op">+</span> theme_bw()</span>
+<span id="cb24-11"><a href="#cb24-11"></a>        <span class="op">+</span> coord_equal()</span>
+<span id="cb24-12"><a href="#cb24-12"></a>        <span class="op">+</span> labs(title<span class="op">=</span><span class="ss">f'V85 &gt; </span><span class="sc">{</span>n<span class="sc">}</span><span class="ss"> km/h'</span>)</span>
+<span id="cb24-13"><a href="#cb24-13"></a>    )</span>
+<span id="cb24-14"><a href="#cb24-14"></a>    <span class="cf">return</span> plot</span>
+<span id="cb24-15"><a href="#cb24-15"></a></span>
+<span id="cb24-16"><a href="#cb24-16"></a>plot_vias_semradar(filter_vias_semradar(vias_radares, <span class="dv">40</span>), vias, <span class="dv">40</span>)</span>
+<span id="cb24-17"><a href="#cb24-17"></a>plot_vias_semradar(filter_vias_semradar(vias_radares, <span class="dv">50</span>), vias, <span class="dv">50</span>)</span>
+<span id="cb24-18"><a href="#cb24-18"></a>plot_vias_semradar(filter_vias_semradar(vias_radares, <span class="dv">60</span>), vias, <span class="dv">60</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div id="ab25a1e1" class="cell quarto-layout-panel" data-layout-ncol="3" data-execution_count="24">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p><img src="report_files/figure-html/cell-25-output-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<div id="ca0ef174" class="cell" data-execution_count="25">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">4</span>))</span>
+<span id="cb25-2"><a href="#cb25-2"></a>vias.plot(ax<span class="op">=</span>ax[<span class="dv">0</span>], color<span class="op">=</span><span class="st">'#dbdbdb'</span>, linewidth<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb25-3"><a href="#cb25-3"></a>vias.plot(ax<span class="op">=</span>ax[<span class="dv">1</span>], color<span class="op">=</span><span class="st">'#dbdbdb'</span>, linewidth<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb25-4"><a href="#cb25-4"></a>vias.plot(ax<span class="op">=</span>ax[<span class="dv">2</span>], color<span class="op">=</span><span class="st">'#dbdbdb'</span>, linewidth<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb25-5"><a href="#cb25-5"></a>filter_vias_semradar(vias_radares, <span class="dv">40</span>).plot(ax<span class="op">=</span>ax[<span class="dv">0</span>], color<span class="op">=</span><span class="st">'#f05f22'</span>, linewidth<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb25-6"><a href="#cb25-6"></a>filter_vias_semradar(vias_radares, <span class="dv">50</span>).plot(ax<span class="op">=</span>ax[<span class="dv">1</span>], color<span class="op">=</span><span class="st">'#f05f22'</span>, linewidth<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb25-7"><a href="#cb25-7"></a>filter_vias_semradar(vias_radares, <span class="dv">60</span>).plot(ax<span class="op">=</span>ax[<span class="dv">2</span>], color<span class="op">=</span><span class="st">'#f05f22'</span>, linewidth<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb25-8"><a href="#cb25-8"></a>ax[<span class="dv">0</span>].set_title(<span class="st">'V85 &gt; 40 km/h'</span>)</span>
+<span id="cb25-9"><a href="#cb25-9"></a>ax[<span class="dv">1</span>].set_title(<span class="st">'V85 &gt; 50 km/h'</span>)</span>
+<span id="cb25-10"><a href="#cb25-10"></a>ax[<span class="dv">2</span>].set_title(<span class="st">'V85 &gt; 60 km/h'</span>)</span>
+<span id="cb25-11"><a href="#cb25-11"></a>plt.show()</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="report_files/figure-html/cell-26-output-1.png" width="880" height="357" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 
 

@@ -3,7 +3,7 @@ title: "NDS-BR e velocidades inseguras em vias urbanas"
 subtitle: "Análise quantitativa"
 author: Pedro Augusto Borges dos Santos
 date: last-modified
-cap-location: margin
+# cap-location: margin
 format: html
 number-sections: true
 lang: pt-BR
@@ -24,7 +24,9 @@ editor_options:
 import pandas as pd
 import geopandas as gpd
 import numpy as np
+from plotnine import *
 import matplotlib.pyplot as plt
+import random
 ```
 
 # Dados do NDS-BR
@@ -55,8 +57,8 @@ min_trip = trip_per_driver.min()
 max_trip = trip_per_driver.max()
 mean_trip = trip_per_driver.mean()
 
-first_trip = ndsbr_sample['trip'].dropna().min()
-last_trip = ndsbr_sample['trip'].dropna().max()
+first_trip = ndsbr_sample['date'].dropna().min()
+last_trip = ndsbr_sample['date'].dropna().max()
 ```
 
 ```{python}
@@ -88,7 +90,7 @@ ndsbr_valid_dist = ndsbr_dist.query('delta_time == 1')
 total_dist = ndsbr_valid_dist['dist'].sum() / 1000
 ```
 
-A amostra do NDS-BR inclui `{python} n_drivers` condutores, com `{python} f'{driven_hours:.2f}'` horas de viagem ao total. Todos os condutores fizeram `{python} n_trips` viagens. A quantidade mínima de viagens por condutor foi `{python} f'{min_trip:.0f}'` e a máxima foi `{python} f'{max_trip: .0f}'`. A média das viagens por condutor foi `{python} f'{mean_trip: .0f}'`. A data da primeira viagem na amostra é `{python} print(first_trip)` e a data da ultima viagem na amostra é `{python} print(last_trip)`. A distância percorrida por todos os condutores na amostra foi de `{python} f'{total_dist:.2f}'` km. Em média, cada condutor percorreu `{python} f'{total_dist / n_drivers:.2f}'` km.
+A amostra do NDS-BR inclui `{python} n_drivers` condutores, com `{python} f'{driven_hours:.2f}'` horas de viagem ao total. Todos os condutores fizeram `{python} n_trips` viagens. A quantidade mínima de viagens por condutor foi `{python} f'{min_trip:.0f}'` e a máxima foi `{python} f'{max_trip: .0f}'`. A média das viagens por condutor foi `{python} f'{mean_trip: .0f}'`. A distância percorrida por todos os condutores na amostra foi de `{python} f'{total_dist:.2f}'` km. Em média, cada condutor percorreu `{python} f'{total_dist / n_drivers:.2f}'` km.
 
 ## Distribuição da velocidade praticada
 
@@ -98,17 +100,16 @@ Como observado na @fig-hist-vel, boa parte das velocidades praticadas dentro da 
 #| label: fig-hist-vel
 #| fig-cap: "Distribuição da velocidade praticada"
 
-fig, ax = plt.subplots()
-ax.hist(
-    ndsbr_geo_utm['spd_kmh'],
-    bins = np.arange(0, 160, 10),
-    color = '#00496d',
-    edgecolor = 'grey'
+(
+    ggplot(ndsbr_sample, aes(x='spd_kmh'))
+    + geom_histogram(binwidth=10, fill='#00496d', color='grey')
+    + labs(
+        x='Velocidade (km/h)',
+        y='Tempo de viagem (seg)'
+    )
+    + theme_bw()
+    + scale_x_continuous(breaks=np.arange(0, 160, 10))
 )
-ax.set_xticks(np.arange(0, 160, 10))
-ax.set_xlabel('Velocidade (km/h)')
-ax.set_ylabel('Tempo de viagem (seg)')
-fig.show()
 ```
 
 Ao considerar as velocidades maiores que 5 km/h, a distribuição da velocidade praticada fica com uma curva mais concentrada, conforme demonstrado em @fig-hist-vel-filter. Para os cálculos seguintes deste trabalho, serão consideradas apenas as velocidades acima de 5 km/h
@@ -120,17 +121,17 @@ Ao considerar as velocidades maiores que 5 km/h, a distribuição da velocidade 
 
 ndsbr_valid_speed = ndsbr_geo_utm.query('spd_kmh > 5')
 
-fig, ax = plt.subplots()
-ax.hist(
-    ndsbr_valid_speed['spd_kmh'],
-    bins = np.arange(0, 160, 10),
-    color = '#00496d',
-    edgecolor = 'grey'
+(
+    ggplot(ndsbr_valid_speed, aes(x = 'spd_kmh'))
+    + geom_histogram(binwidth = 10, fill = '#00496d', color = 'grey')
+    + labs(
+        x = 'Velocidade (km/h)',
+        y = 'Tempo de viagem (seg)'
+    )
+    + theme_bw()
+    + scale_x_continuous(breaks = np.arange(0, 160, 10))
 )
-ax.set_xticks(np.arange(0, 160, 10))
-ax.set_xlabel('Velocidade (km/h)')
-ax.set_ylabel('Tempo de viagem (seg)')
-fig.show()
+
 ```
 
 # Velocidades nas vias de Curitiba
@@ -138,13 +139,22 @@ fig.show()
 O processo de cálculo das velocidades nas vias de Curitiba inicia com a importação dos eixos de via, fornecidos pelo IPPUC^[https://ippuc.org.br/geodownloads/SHAPES_SIRGAS/EIXO_RUA_SIRGAS.zip]. A @fig-vias apresenta um mapa dessas vias.
 
 ```{python}
-#| label: fig-vias
-#| fig-cap: "Mapa das vias de Curitiba"
+#| label: import-vias
 
 vias_url = 'https://ippuc.org.br/geodownloads/SHAPES_SIRGAS/EIXO_RUA_SIRGAS.zip'
 vias = gpd.read_file(vias_url, encoding='latin1')
+```
 
-vias.plot(color = '#00496d', linewidth = 0.5)
+```{python}
+#| label: fig-vias
+#| fig-cap: "Mapa das vias de Curitiba"
+
+(
+    ggplot(vias)
+    + geom_map(color = '#00496d', size = 0.3)
+    + theme_bw()
+    + coord_equal()
+)
 ```
 
 ```{python}
@@ -193,27 +203,274 @@ tbl_v85_dist['dist'] = tbl_v85_dist['dist'].astype('float')
 #| label: fig-vias-v85
 #| fig-cap: "V85 nas vias de Curitiba"
 
-base_plot = vias_v85.plot(color='#dbdbdb', linewidth=0.5)
-vias_v85_valid.plot(ax=base_plot, linewidth=0.5, column='spd_kmh', legend=True)
-
+(
+    ggplot(vias_v85)
+    + geom_map(color='#dbdbdb', size=0.3)
+    + geom_map(vias_v85_valid, aes(color = 'spd_kmh'), size=0.4)
+    + theme_bw()
+    + coord_equal()
+    + labs(color = 'Velocidade (km/h)')
+)
 ```
 
-
-- Tempo de viagem nas vias
+Por fim, a @fig-recorte-hierarquia apresenta as vias locais, coletoras e arteriais, que serão utilizadas como amostra do estudo. Ao remover as vias de trânsito rápido, resta uma extensão de 1995.78 quilômetros de vias. 
 
 ```{python}
+#| label: fig-recorte-hierarquia
+#| fig-cap: "Recorte de hierarquia"
 
+mask = vias_v85_valid['HIERARQUIA'].isin(
+    ['2', '3', '4']
+)
+
+vias_valid_hierarquia = vias_v85_valid[mask]
+
+(
+    ggplot(vias_v85)
+    + geom_map(color='#dbdbdb', size=0.3)
+    + geom_map(vias_valid_hierarquia, color='#00496d', size=0.4)
+    + theme_bw()
+    + coord_equal()
+)
 ```
 
-- Recorte de hierarquia (2, 3, 4): quantos kms de amostra restante?
+```{python}
+#| label: fig-hierarquia
+#| fig-cap: "Distribuição de V85"
+
+(
+    ggplot(vias_valid_hierarquia)
+    + geom_histogram(
+        aes(x='spd_kmh'),
+        binwidth=5, 
+        fill='#00496d', 
+        color='grey'
+    )
+    + labs(x='Velocidade (km/h)', y='Quantidade de trechos de vias')
+    + theme_bw()
+    + scale_x_continuous(breaks=np.arange(0, 130, 10))
+)
+```
+
+```{python}
+#| label: fig-hierarquia-dist
+#| fig-cap: "Distribuição de V85 por hierarquia"
+
+(
+    ggplot(vias_valid_hierarquia)
+    + geom_density(aes(x='spd_kmh'), fill='#00496d', alpha=0.70)
+    + theme_bw()
+    + facet_grid(rows='HIERARQUIA')
+    + scale_x_continuous(limits=[0, 90], breaks=np.arange(0, 90, 10))
+    + labs(x='V85 (km/h)')
+)
+```
 
 # Fiscalização eletrônica
 
 - Quantidade de radares por tipo
 - Mapeamento dos radares
 
-## Analise combinada da velocidade com os radares
+```{python}
+#| label: radares
+
+radar_path = '../data/radar.geojson'
+radar = gpd.read_file(radar_path)
+radar_utm = radar.to_crs(31982).dropna()
+```
+
+```{python}
+#| label: radar-tipo
+#| fig-cap: "Radares por tipo"
+
+(
+    ggplot(vias)
+    + geom_map(color='#bcbcbc', size=0.3)
+    + geom_map(radar_utm, aes(color='tipo'), size=1.5, shape='o', fill=None)
+    + theme_bw()
+    + coord_equal()
+    + labs(color = 'Tipo')
+    + scale_color_manual(values=['#00496d', '#f05f22'])
+)
+
+```
+
+```{python}
+#| label: radar-vel
+#| fig-cap: "Radares de controle de velocidade"
+
+radar_vel = radar_utm.query('tipo == "Controlador" & ctrl_vel == 1')
+
+(
+    ggplot(vias)
+    + geom_map(color='#bcbcbc', size=0.3)
+    + geom_map(radar_vel, color='#00496d', size=1.5, shape='o', fill=None)
+    + theme_bw()
+    + coord_equal()
+    + labs(color = 'Tipo')
+)
+
+```
+
+# Análise combinada da velocidade com os radares
 
 - Existe uma diferença significativa de v85 entre as vias que tem radar e as que não tem radar?
 - Quais trechos de via deveriam ter radar e não tem?
-- Boxplot: presença de radar x velocidade v85
+- Regressão logística
+    - Presença de radar x velocidade v85
+    - Igualizar a amostra entre as classes (com e sem radar)
+
+- Comparação: 
+    - via de alta velocidade com radar x via de alta velocidade sem radar
+    - via de baixa velocidade com radar x via de baixa velocidade sem radar
+    - Limiar da velocidade insegura: 40 km/h
+
+
+
+
+```{python}
+radar_vias = gpd.sjoin_nearest(
+    radar_vel,
+    vias_valid_hierarquia[['CHAVE', 'geometry']],
+    how='left',
+    max_distance=20
+).dropna()
+
+radar_vias_count = radar_vias['CHAVE'].value_counts().to_frame().reset_index()
+
+# if count > 1, presenca_radar is true
+radar_vias_count['presenca_radar'] = radar_vias_count['count'].apply(
+    lambda x: True if x >= 1 else False
+)
+
+vias_radares = pd.merge(
+    vias_valid_hierarquia,
+    radar_vias_count,
+    how='left',
+    on='CHAVE'
+)
+
+vias_radares['presenca_radar'] = vias_radares['presenca_radar'].fillna(False)
+```
+
+
+```{python}
+#| label: fig-radar-boxplot
+#| fig-cap: "Presença de radar x velocidade v85"
+
+random.seed(123)
+
+n_com_radar = vias_radares.query('presenca_radar == True').shape[0]
+
+# Criar um df só com vias com radar
+vias_com_radar = vias_radares.query('presenca_radar == True')
+
+# Criar uma amostra aleatoria só de vias sem radar
+vias_sem_radar = vias_radares.query(
+    'presenca_radar == False'
+).sample(n_com_radar)
+
+# Unir as amostras
+vias_radares_sample = pd.concat([vias_com_radar, vias_sem_radar])
+
+(
+    ggplot(vias_radares_sample, aes(x='presenca_radar', y='spd_kmh'))
+    + geom_boxplot(aes(fill='presenca_radar'))
+    + theme_bw()
+    + labs(
+        x='Presença de radar',
+        y='V85 (km/h)',
+        caption=f'Amostra equalizada entre as classes (n = {n_com_radar})'
+    )
+    + theme(legend_position='none')
+)
+
+```
+
+
+```{python}
+#| label: fig-radar-map-vias
+#| fig-cap: "Trechos de vias com radares"
+
+(
+    ggplot()
+    + geom_map(
+        vias_radares,
+        aes(color='presenca_radar', fill='presenca_radar'),
+        size=0.5
+    )
+    + theme_bw()
+    + labs(color='Presença de radar', fill='Presença de radar')
+    + coord_equal()
+    + scale_color_manual(values=['#e1e1e1', '#00496d'])
+    + scale_fill_manual(values=['#e1e1e1', '#00496d'])
+)
+```
+
+
+```{python}
+# Creating a new variable based on presenca_radar and spd_kmh
+vias_radares['tipo_spd'] = vias_radares.apply(
+    lambda x: 'segura' if x['spd_kmh'] < 40 else 'insegura', axis=1
+)
+```
+
+
+```{python}
+n_radar_seguro = vias_radares.query('presenca_radar == True & tipo_spd == "segura"').shape[0]
+
+# Criar um df só com vias com radar
+vias_com_radar_seguro = vias_radares.query('presenca_radar == True & tipo_spd == "segura"')
+
+# Criar uma amostra aleatoria só de vias sem radar
+random.seed(42)
+
+vias_sem_radar_seguro = vias_radares.query(
+    'presenca_radar == False & tipo_spd == "segura"'
+).sample(n_radar_seguro)
+
+# Unir as amostras
+vias_seguro_sample = pd.concat([vias_com_radar_seguro, vias_sem_radar_seguro])
+
+
+(
+    ggplot(vias_seguro_sample)
+    + geom_boxplot(aes(x='presenca_radar', y='spd_kmh'))
+    + theme_bw()
+    + labs(x='Presença de radar', y='V85 (km/h)', caption=f'Amostra equalizada entre as classes (n={n_radar_seguro})')
+)
+```
+
+```{python}
+(
+    ggplot(vias_radares.query('tipo_spd == "insegura"'))
+    + geom_boxplot(aes(x='presenca_radar', y='spd_kmh'))
+    + theme_bw()
+    + labs(x='Presença de radar', y='V85 (km/h)')
+)
+```
+
+
+```{python}
+#| layout-ncol: 3
+def filter_vias_semradar(df: pd.DataFrame, n: int) -> pd.DataFrame:
+    df = df.query(f'presenca_radar == False & spd_kmh > {n}')
+    return df
+
+```
+
+
+```{python}
+fig, ax = plt.subplots(1, 3, figsize=(12, 6))
+vias.plot(ax=ax[0], color='#dbdbdb', linewidth=0.3)
+vias.plot(ax=ax[1], color='#dbdbdb', linewidth=0.3)
+vias.plot(ax=ax[2], color='#dbdbdb', linewidth=0.3)
+filter_vias_semradar(vias_radares, 40).plot(ax=ax[0], color='#f05f22', linewidth=0.4)
+filter_vias_semradar(vias_radares, 50).plot(ax=ax[1], color='#f05f22', linewidth=0.4)
+filter_vias_semradar(vias_radares, 60).plot(ax=ax[2], color='#f05f22', linewidth=0.4)
+ax[0].set_title('V85 > 40 km/h')
+ax[1].set_title('V85 > 50 km/h')
+ax[2].set_title('V85 > 60 km/h')
+plt.show()
+
+```
